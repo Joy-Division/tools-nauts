@@ -1,0 +1,14 @@
+# Project Config
+#-------------------------
+.vscode
+.vs
+
+# Binaries
+#-------------------------
+*.[Oo]
+*.[Aa]
+*.[Ee][Ll][Ff]
+
+*.[Oo][Bb][Jj]
+*.[Ll][Ii][Bb]
+*.[Ee][Xx][Ee]
