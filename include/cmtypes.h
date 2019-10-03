@@ -67,14 +67,24 @@ typedef unsigned long long  ullong, u_llong;
  *---------------------------------------------------------------------------*/
 typedef   signed CM_TYPE_INT8   sbyte,  s_byte;
 typedef unsigned CM_TYPE_INT8   ubyte,  u_byte;
-typedef   signed CM_TYPE_INT8   sint8,  s_int8,  s8,  schar8,   s_char8;
-typedef unsigned CM_TYPE_INT8   uint8,  u_int8,  u8,  uchar8,   u_char8;
-typedef   signed CM_TYPE_INT16  sint16, s_int16, s16, sshort16, s_short16;
-typedef unsigned CM_TYPE_INT16  uint16, u_int16, u16, ushort16, u_short16;
-typedef   signed CM_TYPE_INT32  sint32, s_int32, s32, slong32,  s_long32;
-typedef unsigned CM_TYPE_INT32  uint32, u_int32, u32, ulong32,  u_long32;
-typedef   signed CM_TYPE_INT64  sint64, s_int64, s64, slong64,  s_long64;
-typedef unsigned CM_TYPE_INT64  uint64, u_int64, u64, ulong64,  u_long64;
+
+typedef   signed CM_TYPE_INT8   sint8,  s_int8,  s8;
+typedef unsigned CM_TYPE_INT8   uint8,  u_int8,  u8;
+typedef   signed CM_TYPE_INT16  sint16, s_int16, s16;
+typedef unsigned CM_TYPE_INT16  uint16, u_int16, u16;
+typedef   signed CM_TYPE_INT32  sint32, s_int32, s32;
+typedef unsigned CM_TYPE_INT32  uint32, u_int32, u32;
+typedef   signed CM_TYPE_INT64  sint64, s_int64, s64;
+typedef unsigned CM_TYPE_INT64  uint64, u_int64, u64;
+
+typedef   signed CM_TYPE_INT8   schar8,   s_char8;
+typedef unsigned CM_TYPE_INT8   uchar8,   u_char8;
+typedef   signed CM_TYPE_INT16  sshort16, s_short16;
+typedef unsigned CM_TYPE_INT16  ushort16, u_short16;
+typedef   signed CM_TYPE_INT32  slong32,  s_long32;
+typedef unsigned CM_TYPE_INT32  ulong32,  u_long32;
+typedef   signed CM_TYPE_INT64  slong64,  s_long64;
+typedef unsigned CM_TYPE_INT64  ulong64,  u_long64;
 
 typedef float   float32, f32;
 typedef double  float64, f64;
