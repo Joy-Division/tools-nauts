@@ -5,24 +5,24 @@
 #ifndef INC_CMSWAP_H
 #define INC_CMSWAP_H
 
-#include "cmconf.h"
-#include "cmtypes.h"
+#include "cmconf.h"  /* type flags */
+#include "cmtypes.h" /* typedefs */
 
 /*---------------------------------------------------------------------------*
  * Public Interface (Cast to Signed/Unsigned)
  *---------------------------------------------------------------------------*/
-#define CM_ByteSwapS16(val)   (s16)CM_ByteSwap16(val)
-#define CM_ByteSwapU16(val)   (u16)CM_ByteSwap16(val)
+#define CM_ByteSwapS16(val)   (s16)CM_ByteSwap16((u16)val)
+#define CM_ByteSwapU16(val)   (u16)CM_ByteSwap16((u16)val)
 
-#define CM_ByteSwapS32(val)   (s32)CM_ByteSwap32(val)
-#define CM_ByteSwapU32(val)   (u32)CM_ByteSwap32(val)
+#define CM_ByteSwapS32(val)   (s32)CM_ByteSwap32((u32)val)
+#define CM_ByteSwapU32(val)   (u32)CM_ByteSwap32((u32)val)
 
-#define CM_ByteSwapS64(val)   (s64)CM_ByteSwap64(val)
-#define CM_ByteSwapU64(val)   (u64)CM_ByteSwap64(val)
+#define CM_ByteSwapS64(val)   (s64)CM_ByteSwap64((u64)val)
+#define CM_ByteSwapU64(val)   (u64)CM_ByteSwap64((u64)val)
 
 #if defined( HASTYPE_INT128 )
-#define CM_ByteSwapS128(val)  (s128)CM_ByteSwap128(val)
-#define CM_ByteSwapU128(val)  (u128)CM_ByteSwap128(val)
+#define CM_ByteSwapS128(val)  (s128)CM_ByteSwap128((u128)val)
+#define CM_ByteSwapU128(val)  (u128)CM_ByteSwap128((u128)val)
 #endif /* HASTYPE_INT128 */
 
 /*---------------------------------------------------------------------------*
@@ -172,6 +172,69 @@ static inline float128 CM_ByteSwapF128( float128 val )
 	return out.f128;
 }
 #endif /* HASTYPE_FLOAT128 */
+
+/*---------------------------------------------------------------------------*
+ * Endianness Conversion (Pass by Reference)
+ *---------------------------------------------------------------------------*/
+static inline void CM_ByteSwap16R( void *val )
+{
+	union16 *in = (union16 *)val;
+	union16 tmp; tmp.u16 = in->u16;
+	
+	in->u8[0] = tmp.u8[1];
+	in->u8[1] = tmp.u8[0];
+}
+
+static inline void CM_ByteSwap32R( void *val )
+{
+	union32 *in = (union32 *)val;
+	union32 tmp; tmp.u32 = in->u32;
+	
+	in->u8[0] = tmp.u8[3];
+	in->u8[1] = tmp.u8[2];
+	in->u8[2] = tmp.u8[1];
+	in->u8[3] = tmp.u8[0];
+}
+
+static inline void CM_ByteSwap64R( void *val )
+{
+	union64 *in = (union64 *)val;
+	union64 tmp; tmp.u64 = in->u64;
+	
+	in->u8[0] = tmp.u8[7];
+	in->u8[1] = tmp.u8[6];
+	in->u8[2] = tmp.u8[5];
+	in->u8[3] = tmp.u8[4];
+	in->u8[4] = tmp.u8[3];
+	in->u8[5] = tmp.u8[2];
+	in->u8[6] = tmp.u8[1];
+	in->u8[7] = tmp.u8[0];
+}
+
+#if defined( HASTYPE_INT128 )
+static inline void CM_ByteSwap128R( void *val )
+{
+	union128 *in = (union128 *)val;
+	union128 tmp; tmp.u128 = in->u128;
+	
+	in->u8[ 0] = tmp.u8[15];
+	in->u8[ 1] = tmp.u8[14];
+	in->u8[ 2] = tmp.u8[13];
+	in->u8[ 3] = tmp.u8[12];
+	in->u8[ 4] = tmp.u8[11];
+	in->u8[ 5] = tmp.u8[10];
+	in->u8[ 6] = tmp.u8[ 9];
+	in->u8[ 7] = tmp.u8[ 8];
+	in->u8[ 8] = tmp.u8[ 7];
+	in->u8[ 9] = tmp.u8[ 6];
+	in->u8[10] = tmp.u8[ 5];
+	in->u8[11] = tmp.u8[ 4];
+	in->u8[12] = tmp.u8[ 3];
+	in->u8[13] = tmp.u8[ 2];
+	in->u8[14] = tmp.u8[ 1];
+	in->u8[15] = tmp.u8[ 0];
+}
+#endif /* HASTYPE_INT128 */
 
 /*---------------------------------------------------------------------------*/
 #endif /* END OF FILE */
