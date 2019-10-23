@@ -1,3 +1,7 @@
+#
+# POLICENAUTS Toolbox
+# Top-Level Makefile
+#
 
 TOP    = .
 BINDIR = $(TOP)/bin
@@ -23,9 +27,10 @@ data_dpk:
 
 #---------------------------------------------------------------------------#
 
-clean: clean_obj \
-       clean_lib \
-       clean_exe
+clean:\
+	clean_obj \
+	clean_lib \
+	clean_exe
 
 clean_obj:
 	$(MAKE) -C $(DATA)/dpk clean_obj
