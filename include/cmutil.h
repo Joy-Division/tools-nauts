@@ -26,7 +26,7 @@
 #if defined( HASTYPE_INT128 )
 
 /* Set Int128 with 16-bit (x8) */
-static inline void CM_SetInt128_16(
+static inline void CM_SetInt128w16(
 	uint128 *p128,
 	uint16 hi16a, uint16 hi16b, uint16 hi16c, uint16 hi16d,
 	uint16 lo16a, uint16 lo16b, uint16 lo16c, uint16 lo16d )
@@ -54,7 +54,7 @@ static inline void CM_SetInt128_16(
 }
 
 /* Set Int128 with 32-bit (x4) */
-static inline void CM_SetInt128_32(
+static inline void CM_SetInt128w32(
 	uint128 *p128,
 	uint32 hi32a, uint32 hi32b,
 	uint32 lo32a, uint32 lo32b )
@@ -74,7 +74,7 @@ static inline void CM_SetInt128_32(
 }
 
 /* Set Int128 with 64-bit (x2) */
-static inline void CM_SetInt128_64(
+static inline void CM_SetInt128w64(
 	uint128 *p128, uint64 hi64, uint64 lo64 )
 {
 	union128 *tmp = (union128 *)p128;
