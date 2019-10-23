@@ -1,5 +1,7 @@
 /*
- * POLICENAUTS DPK File Extractor
+ * POLICENAUTS Toolbox
+ * DPK File Extractor
+ *
  * Jonathan Ingram (2017～2019)
  * Special thanks to Missingno_force
  */
