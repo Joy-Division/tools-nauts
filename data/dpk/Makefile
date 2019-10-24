@@ -23,7 +23,7 @@ tools: dpk_extract
 
 dpk_extract: dpk_extract.c
 	$(CC) $(CFLAGS) $^ -o $(BINDIR)/$@
-	cp ./$@.bat $(BINDIR)/$@.bat
+	cp -p ./$@.bat $(BINDIR)/$@.bat
 
 #---------------------------------------------------------------------------#
 
