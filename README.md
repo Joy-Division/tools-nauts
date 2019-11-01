@@ -1,23 +1,21 @@
 # Magic Subway
 
-This project contains a collection of tools for KCE Osaka's Policenauts and KCE Japan's Tokimemki Memorial Drama Series.
-
-This includes the following games:
-
-- Policenauts
-- Policenauts Pilot Disk
-- Policenauts Private Collection
-- Tokimeki Memorial Drama Series Vol.1: Nijiiro no Seishun
-- Tokimeki Memorial Drama Series Vol.2: Irodori no Love Song
-- Tokimeki Memorial Drama Series Vol.3: Tabidachi no Uta
+A collection of tools for Konami's Policenauts and Tokimemki Memorial Drama Series.
 
 ## List of Tools
 
-- DPK Extractor
+* DPK Extractor
 
 More will be added in the future, trust me.
 
 ## Requirements
 
-- [MSYS2](https://www.msys2.org/) with MinGW32/64
-- Or some other C compiler, these aren't gonna be that complicated to build.
+All C/C++ code is written for the GNU C/C++ compilers; it may or may not compile without modification on other toolchains.
+
+For Windows:
+* [MSYS2](https://www.msys2.org/) with MinGW GCC
+
+## Links & Discussion
+
+* [Joy Division on GitHub](https://github.com/Joy-Division)
+* [Joy Division on Discord](https://discord.gg/UtNEjtg)
