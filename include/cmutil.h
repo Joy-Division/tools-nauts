@@ -1,5 +1,5 @@
 /*
- *【CM Library】by J.Ingram
+ *【 LibCM 】by J.Ingram
  * Common Utilities
  */
 #ifndef INC_CMUTIL_H
@@ -7,7 +7,7 @@
 
 #include <stddef.h>  /* for size_t */
 #include "cmconf.h"  /* type flags */
-#include "cmtypes.h" /* typedefs */
+#include "cmtypes.h" /* typedefs   */
 
 /*---------------------------------------------------------------------------*
  * Size Macros
@@ -16,22 +16,29 @@
 #define CM_MBtoBYTE(x)  (size_t)((x) << 20)
 #define CM_GBtoBYTE(x)  (size_t)((x) << 30)
 
+/* Will always round down if !( x >= n ) */
 #define CM_BYTEtoKB(x)  (size_t)((x) >> 10)
 #define CM_BYTEtoMB(x)  (size_t)((x) >> 20)
 #define CM_BYTEtoGB(x)  (size_t)((x) >> 30)
 
 /*---------------------------------------------------------------------------*
- * 128-bit Set Functions
+ * 128-bit Setter Functions
  *---------------------------------------------------------------------------*/
 #if defined( HASTYPE_INT128 )
 
 /* Set Int128 with 16-bit (x8) */
 static inline void CM_SetInt128w16(
-	uint128 *p128,
-	uint16 hi16a, uint16 hi16b, uint16 hi16c, uint16 hi16d,
-	uint16 lo16a, uint16 lo16b, uint16 lo16c, uint16 lo16d )
-{
-	union128 *tmp = (union128 *)p128;
+uint128 *dst, // destination
+uint16 hi16a, //   highest 16b of upper 64b
+uint16 hi16b, // upper-mid 16b of upper 64b
+uint16 hi16c, // lower-mid 16b of upper 64b
+uint16 hi16d, //    lowest 16b of upper 64b
+uint16 lo16a, //   highest 16b of lower 64b
+uint16 lo16b, // upper-mid 16b of lower 64b
+uint16 lo16c, // lower-mid 16b of lower 64b
+uint16 lo16d  //    lowest 16b of lower 64b
+){
+	union128 *tmp = (union128 *)dst;
 #ifdef TARGET_BIG_ENDIAN
 	tmp->u16[0] = hi16a;
 	tmp->u16[1] = hi16b;
@@ -55,11 +62,13 @@ static inline void CM_SetInt128w16(
 
 /* Set Int128 with 32-bit (x4) */
 static inline void CM_SetInt128w32(
-	uint128 *p128,
-	uint32 hi32a, uint32 hi32b,
-	uint32 lo32a, uint32 lo32b )
-{
-	union128 *tmp = (union128 *)p128;
+uint128 *dst, // destination
+uint32 hi32a, // upper 32b of upper 64b
+uint32 hi32b, // lower 32b of upper 64b
+uint32 lo32a, // upper 32b of lower 64b
+uint32 lo32b  // lower 32b of lower 64b
+){
+	union128 *tmp = (union128 *)dst;
 #ifdef TARGET_BIG_ENDIAN
 	tmp->u32[0] = hi32a;
 	tmp->u32[1] = hi32b;
@@ -75,9 +84,11 @@ static inline void CM_SetInt128w32(
 
 /* Set Int128 with 64-bit (x2) */
 static inline void CM_SetInt128w64(
-	uint128 *p128, uint64 hi64, uint64 lo64 )
-{
-	union128 *tmp = (union128 *)p128;
+uint128 *dst, // destination
+uint64 hi64,  // upper 64b
+uint64 lo64   // lower 64b
+){
+	union128 *tmp = (union128 *)dst;
 #ifdef TARGET_BIG_ENDIAN
 	tmp->u64[0] = hi64;
 	tmp->u64[1] = lo64;

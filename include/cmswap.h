@@ -1,12 +1,12 @@
 /*
- *【CM Library】by J.Ingram
- * ByteSwap Utility Functions
+ *【 LibCM 】by J.Ingram
+ * Endianness Utilities
  */
 #ifndef INC_CMSWAP_H
 #define INC_CMSWAP_H
 
 #include "cmconf.h"  /* type flags */
-#include "cmtypes.h" /* typedefs */
+#include "cmtypes.h" /* typedefs   */
 
 /*---------------------------------------------------------------------------*
  * Public Interface (Cast to Signed/Unsigned)
@@ -20,13 +20,13 @@
 #define CM_ByteSwapS64(val)   (s64)CM_ByteSwap64((u64)val)
 #define CM_ByteSwapU64(val)   (u64)CM_ByteSwap64((u64)val)
 
-#if defined( HASTYPE_INT128 )
+#ifdef HASTYPE_INT128
 #define CM_ByteSwapS128(val)  (s128)CM_ByteSwap128((u128)val)
 #define CM_ByteSwapU128(val)  (u128)CM_ByteSwap128((u128)val)
-#endif /* HASTYPE_INT128 */
+#endif
 
 /*---------------------------------------------------------------------------*
- * Endianness Conversion for Integer Types
+ * Reverse Endianness for Integer Types
  *---------------------------------------------------------------------------*/
 static inline uint16 CM_ByteSwap16( uint16 val )
 {
@@ -42,7 +42,7 @@ static inline uint32 CM_ByteSwap32( uint32 val )
 {
 	union32 in = (union32)val, out;
 	
-#if ( CHAINED_BYTESWAP )
+#ifdef CHAINED_BYTESWAP
 	out.u16[0] = CM_ByteSwap16( in.u16[1] );
 	out.u16[1] = CM_ByteSwap16( in.u16[0] );
 #else
@@ -58,7 +58,7 @@ static inline uint64 CM_ByteSwap64( uint64 val )
 {
 	union64 in = (union64)val, out;
 	
-#if ( CHAINED_BYTESWAP )
+#ifdef CHAINED_BYTESWAP
 	out.u32[0] = CM_ByteSwap32( in.u32[1] );
 	out.u32[1] = CM_ByteSwap32( in.u32[0] );
 #else
@@ -79,7 +79,7 @@ static inline uint128 CM_ByteSwap128( uint128 val )
 {
 	union128 in = (union128)val, out;
 	
-#if ( CHAINED_BYTESWAP )
+#ifdef CHAINED_BYTESWAP
 	out.u64[0] = CM_ByteSwap64( in.u64[1] );
 	out.u64[1] = CM_ByteSwap64( in.u64[0] );
 #else
@@ -105,13 +105,13 @@ static inline uint128 CM_ByteSwap128( uint128 val )
 #endif /* HASTYPE_INT128 */
 
 /*---------------------------------------------------------------------------*
- * Endianness Conversion for Floating Point Types
+ * Reverse Endianness for Floating Point Types
  *---------------------------------------------------------------------------*/
 static inline float32 CM_ByteSwapF32( float32 val )
 {
 	union32 in = (union32)val, out;
 	
-#if ( CHAINED_BYTESWAP )
+#ifdef CHAINED_BYTESWAP
 	out.u16[0] = CM_ByteSwap16( in.u16[1] );
 	out.u16[1] = CM_ByteSwap16( in.u16[0] );
 #else
@@ -127,7 +127,7 @@ static inline float64 CM_ByteSwapF64( float64 val )
 {
 	union64 in = (union64)val, out;
 	
-#if ( CHAINED_BYTESWAP )
+#ifdef CHAINED_BYTESWAP
 	out.u32[0] = CM_ByteSwap32( in.u32[1] );
 	out.u32[1] = CM_ByteSwap32( in.u32[0] );
 #else
@@ -148,7 +148,7 @@ static inline float128 CM_ByteSwapF128( float128 val )
 {
 	union128 in = (union128)val, out;
 	
-#if ( CHAINED_BYTESWAP )
+#ifdef CHAINED_BYTESWAP
 	out.u64[0] = CM_ByteSwap64( in.u64[1] );
 	out.u64[1] = CM_ByteSwap64( in.u64[0] );
 #else
@@ -174,7 +174,7 @@ static inline float128 CM_ByteSwapF128( float128 val )
 #endif /* HASTYPE_FLOAT128 */
 
 /*---------------------------------------------------------------------------*
- * Endianness Conversion (Pass by Reference)
+ * Reverse Endianness (Pass by Reference)
  *---------------------------------------------------------------------------*/
 static inline void CM_ByteSwap16R( void *val )
 {
@@ -235,6 +235,28 @@ static inline void CM_ByteSwap128R( void *val )
 	in->u8[15] = tmp.u8[ 0];
 }
 #endif /* HASTYPE_INT128 */
+
+/*---------------------------------------------------------------------------*
+ * Get Native Endianness
+ *---------------------------------------------------------------------------*/
+#define CM_ENDIAN_LIL (0)
+#define CM_ENDIAN_BIG (1)
+
+static inline bool8 CM_IsBigEndian( void )
+{
+	u_int32 test_val = 0x01FFFF00;
+	union32 *test_ptr = (union32 *)&test_val;
+	
+	return test_ptr->u8[0];
+}
+
+static inline bool8 CM_IsLittleEndian( void )
+{
+	u_int32 test_val = 0x00FFFF01;
+	union32 *test_ptr = (union32 *)&test_val;
+	
+	return test_ptr->u8[0];
+}
 
 /*---------------------------------------------------------------------------*/
 #endif /* END OF FILE */
