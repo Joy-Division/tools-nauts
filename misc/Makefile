@@ -1,9 +1,9 @@
 #
 # POLICENAUTS Toolbox
-# Makefile for DPK Tools
+# Makefile for Shared Components
 #
 
-TOP    = ../..
+TOP    = ..
 BINDIR = $(TOP)/bin
 INCDIR = $(TOP)/include
 LIBDIR = $(TOP)/lib
@@ -18,18 +18,20 @@ GXX_WIN64 = x86_64-w64-mingw32-g++
 
 CFLAGS = -Wall -I$(INCDIR) -g -O2
 
-all: tools
-tools: dpk_extract
+TARGET  = libmisc.a
+OBJECTS = mkpath.o
 
-$(LIBDIR)/libmisc.a:
-	$(MAKE) -C $(TOP)/misc install
+%.o: %.c
+	$(CC) $(CFLAGS) $^ -c
+#	objdump -dl $@ > $@.txt
 
-dpk_extract: $(LIBDIR)/libmisc.a
-	$(CC) $(CFLAGS) $@.c -L$(LIBDIR) -lmisc -o $@
+all: $(TARGET)
 
-install: tools
-	cp -p ./dpk_extract     $(BINDIR)/dpk_extract
-	cp -p ./dpk_extract.bat $(BINDIR)/dpk_extract.bat
+$(TARGET): $(OBJECTS)
+	$(AR) -cr $@ $(OBJECTS)
+
+install: $(TARGET)
+	cp -p $(TARGET) $(LIBDIR)/$(TARGET)
 
 #---------------------------------------------------------------------------#
 
@@ -42,7 +44,7 @@ clean_obj:
 	-rm *.o *.obj
 
 clean_lib:
-# PLACEHOLDER
+	-rm *.a *.lib
 
 clean_exe:
-	-rm dpk_extract
+# PLACEHOLDER
