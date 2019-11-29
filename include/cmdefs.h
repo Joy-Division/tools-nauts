@@ -8,29 +8,25 @@
 /*---------------------------------------------------------------------------*
  * Result/Status Macros
  *---------------------------------------------------------------------------*/
-#if !defined( NO )\
- && !defined( YES )
-enum { NO, YES };
+#ifndef NO
+#define NO  (0)
+#endif
+#ifndef YES
+#define YES (1)
 #endif
 
-#if !defined( OFF )\
- && !defined( ON )
-enum { OFF, ON };
+#ifndef OFF
+#define OFF (0)
+#endif
+#ifndef ON
+#define ON  (1)
 #endif
 
-#if !defined( NG )\
- && !defined( OK )
-enum { NG, OK };
+#ifndef NG
+#define NG  (-1)
 #endif
-
-#if !defined( BAD )\
- && !defined( GOOD )
-enum { BAD, GOOD };
-#endif
-
-#if !defined( FAIL )\
- && !defined( PASS )
-enum { FAIL, PASS };
+#ifndef OK
+#define OK  (0)
 #endif
 
 /*---------------------------------------------------------------------------*
