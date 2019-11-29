@@ -1,29 +1,28 @@
 #
 # POLICENAUTS Toolbox
-# Makefile for Shared Components
+# Makefile for Shared Code
 #
 
-TOP    = ..
+TOP    = ../..
 BINDIR = $(TOP)/bin
 INCDIR = $(TOP)/include
 LIBDIR = $(TOP)/lib
+MKDIR  = $(TOP)/make
 
-# Windows (MinGW)
-GCC_WIN32 = i686-w64-mingw32-gcc
-GXX_WIN32 = i686-w64-mingw32-g++
-GCC_WIN64 = x86_64-w64-mingw32-gcc
-GXX_WIN64 = x86_64-w64-mingw32-g++
+include $(MKDIR)/mkdefs.mk
 
 #---------------------------------------------------------------------------#
 
 CFLAGS = -Wall -I$(INCDIR) -g -O2
 
-TARGET  = libmisc.a
+TARGET  = libshared.a
 OBJECTS = mkpath.o
 
 %.o: %.c
 	$(CC) $(CFLAGS) $^ -c
 #	objdump -dl $@ > $@.txt
+
+#---------------------------------------------------------------------------#
 
 all: $(TARGET)
 
@@ -46,5 +45,5 @@ clean_obj:
 clean_lib:
 	-rm *.a *.lib
 
-clean_exe:
-# PLACEHOLDER
+clean_inst:
+	-rm $(LIBDIR)/$(TARGET)

@@ -7,39 +7,42 @@ TOP    = .
 BINDIR = $(TOP)/bin
 INCDIR = $(TOP)/include
 LIBDIR = $(TOP)/lib
+MKDIR  = $(TOP)/make
 
-MISC  = $(TOP)/misc
-DATA  = $(TOP)/data
-SOUND = $(TOP)/sound
+#include $(MKDIR)/mkdefs.mk
 
 #---------------------------------------------------------------------------#
 
-all: shared tools
+SRCDIR = $(TOP)/src
+
+#---------------------------------------------------------------------------#
+
+all: shared tools install
 
 shared:
-	$(MAKE) -C $(MISC) install
+	$(MAKE) -C $(SRCDIR)/shared install
 
 tools:
-	$(MAKE) -C $(DATA)/dpk
-#	$(MAKE) -C $(DATA)/pac
-#	$(MAKE) -C $(SOUND)/pac
+	$(MAKE) -C $(SRCDIR)/dpk $@
+#	$(MAKE) -C $(SRCDIR)/pac $@
+#	$(MAKE) -C $(SRCDIR)/sound $@
 
 install:
-	$(MAKE) -C $(DATA)/dpk install
-#	$(MAKE) -C $(DATA)/pac install
-#	$(MAKE) -C $(SOUND)/pac install
+	$(MAKE) -C $(SRCDIR)/dpk $@
+#	$(MAKE) -C $(SRCDIR)/pac $@
+#	$(MAKE) -C $(SRCDIR)/sound $@
 
 #---------------------------------------------------------------------------#
 
-clean:\
-	clean_all \
+clean_all:\
+	clean \
 	clean_lib
 
-clean_all:
-	$(MAKE) -C $(MISC) clean
-	$(MAKE) -C $(DATA)/dpk clean
-#	$(MAKE) -C $(DATA)/pac clean
-#	$(MAKE) -C $(SOUND)/pac clean
+clean:
+	$(MAKE) -C $(SRCDIR)/shared $@
+	$(MAKE) -C $(SRCDIR)/dpk $@
+#	$(MAKE) -C $(SRCDIR)/pac $@
+#	$(MAKE) -C $(SRCDIR)/sound $@
 
 clean_lib:
 	-rm $(LIBDIR)/*.a

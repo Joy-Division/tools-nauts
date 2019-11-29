@@ -14,7 +14,7 @@
  *---------------------------------------------------------------------------*/
 extern void DPK_LoadHeader    ( DPK_HEADER *head, FILE *dpk );
 extern void DPK_ReverseHeader ( DPK_HEADER *head );
-extern bool DPK_CheckHeader   ( DPK_HEADER *head );
+extern int  DPK_CheckHeader   ( DPK_HEADER *head );
 
 /*---------------------------------------------------------------------------*
  * DPK Entry Table
@@ -25,9 +25,9 @@ extern void DPK_ReverseEntryTable ( DPK_ENTRY *table, DPK_HEADER *head );
 /*---------------------------------------------------------------------------*
  * DPK File Extract
  *---------------------------------------------------------------------------*/
-extern bool DPK_CreateOutputDir( char *dir, char *arg );
+extern int DPK_CreateOutputDir( char *dir, char *arg );
 
-extern bool DPK_ExtractFile(
+extern int DPK_ExtractFile(
 DPK_ENTRY   *table, /* DPK entry table */
 u_int       index,  /* DPK entry index */
 FILE        *dpk,   /* DPK file ptr    */

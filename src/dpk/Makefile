@@ -7,25 +7,24 @@ TOP    = ../..
 BINDIR = $(TOP)/bin
 INCDIR = $(TOP)/include
 LIBDIR = $(TOP)/lib
+MKDIR  = $(TOP)/make
 
-# Windows (MinGW)
-GCC_WIN32 = i686-w64-mingw32-gcc
-GXX_WIN32 = i686-w64-mingw32-g++
-GCC_WIN64 = x86_64-w64-mingw32-gcc
-GXX_WIN64 = x86_64-w64-mingw32-g++
+include $(MKDIR)/mkdefs.mk
 
 #---------------------------------------------------------------------------#
 
 CFLAGS = -Wall -I$(INCDIR) -g -O2
 
+#---------------------------------------------------------------------------#
+
 all: tools
 tools: dpk_extract
 
-$(LIBDIR)/libmisc.a:
-	$(MAKE) -C $(TOP)/misc install
+$(LIBDIR)/libshared.a:
+	$(MAKE) -C $(TOP)/src/shared install
 
-dpk_extract: $(LIBDIR)/libmisc.a
-	$(CC) $(CFLAGS) $@.c -L$(LIBDIR) -lmisc -o $@
+dpk_extract: $(LIBDIR)/libshared.a
+	$(CC) $(CFLAGS) $@.c -L$(LIBDIR) -lshared -o $@
 
 install: tools
 	cp -p ./dpk_extract     $(BINDIR)/dpk_extract
@@ -46,3 +45,7 @@ clean_lib:
 
 clean_exe:
 	-rm dpk_extract
+
+clean_inst:
+	-rm $(BINDIR)/dpk_extract
+	-rm $(BINDIR)/dpk_extract.bat

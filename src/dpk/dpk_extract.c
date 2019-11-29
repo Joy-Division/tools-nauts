@@ -23,7 +23,7 @@
 #include "dpk_extract.h"
 #include "fmt_data.h"
 
-static bool dpkEndianFlag; // true if file endianness != host endianness
+static bool dpkEndianFlag;
 
 /*---------------------------------------------------------------------------*
  * DPK Header
@@ -42,23 +42,36 @@ void DPK_ReverseHeader( DPK_HEADER *head )
 	CM_ByteSwap32R( &head->entry_size );
 }
 
-bool DPK_CheckHeader( DPK_HEADER *head )
+int DPK_CheckHeader( DPK_HEADER *head )
 {
+	union32 id_be, id_le;
+	id_be.u8[0] = 'D'; id_le.u8[0] = 'F';
+	id_be.u8[1] = 'I'; id_le.u8[1] = 'R';
+	id_be.u8[2] = 'R'; id_le.u8[2] = 'I';
+	id_be.u8[3] = 'F'; id_le.u8[3] = 'D';
+	
 	// check format ID
-	if( ( head->format_id != 'DIRF' )   // 'FRID' check (LE)
-	&&  ( head->format_id != 'FRID' ) ) // 'DIRF' check (BE)
+	if(( head->format_id != id_le.u32 )
+	&& ( head->format_id != id_be.u32 ))
 	{
-		printf( "\nERROR: Invalid format ID!!\n" );
+		printf( "\nERROR: Invalid Format ID\n" );
+		printf( "Expected : 'DIRF' or 'FRID'\n" );
+		printf( "Found    : '%.4s'\n", (char *)&head->format_id );
 		return NG;
 	}
 	
 	// check attribute
-	if( head->attribute == DPK_ATTR_LE ){
-		dpkEndianFlag = false;
-	} else if( head->attribute == DPK_ATTR_BE ){
-		dpkEndianFlag = true;
+	if(( head->attribute == DPK_ATTR_LE )
+	&& ( head->format_id == id_le.u32 )){
+		dpkEndianFlag = CM_ENDIAN_LIL;
+	}
+	else if(( head->attribute == DPK_ATTR_BE )
+	/**/ && ( head->format_id == id_be.u32 )){
+		dpkEndianFlag = CM_ENDIAN_BIG;
 	} else {
-		printf( "\nERROR: Invalid endian signature!!\n" );
+		printf( "\nERROR: Invalid Attribute\n" );
+		printf( "Expected : 0x%08x or 0x%08x\n", DPK_ATTR_LE, DPK_ATTR_BE );
+		printf( "Found    : 0x%08x\n", head->attribute );
 		return NG;
 	}
 	
@@ -88,7 +101,7 @@ void DPK_ReverseEntryTable( DPK_ENTRY *table, DPK_HEADER *head )
 /*---------------------------------------------------------------------------*
  * DPK File Extract
  *---------------------------------------------------------------------------*/
-bool DPK_CreateOutputDir( char *dir, char *arg )
+int DPK_CreateOutputDir( char *dir, char *arg )
 {
 	// copy filename
 	strcpy( dir, arg );
@@ -98,13 +111,13 @@ bool DPK_CreateOutputDir( char *dir, char *arg )
 	printf( "\nOutput Directory: %s\n", dir );
 	
 	if( CM_MakeDir( dir ) < 0 ){
-		printf( "ERROR: Could not create %s !!\n", dir );
+		printf( "ERROR: Could not create %s\n", dir );
 		return NG;
 	}
 	return OK;
 }
 
-bool DPK_ExtractFile(
+int DPK_ExtractFile(
 DPK_ENTRY   *table, /* DPK entry table */
 u_int       index,  /* DPK entry index */
 FILE        *dpk,   /* DPK file ptr    */
@@ -118,7 +131,7 @@ char        *dir    /* ouput file dir  */
 	
 	// error check
 	if( !( out = fopen( name, "wb" ) ) ){
-		printf( "ERROR: Could not create %s !!\n", name );
+		printf( "ERROR: Could not create %s\n", name );
 		fclose( out );
 		return NG;
 	}
@@ -158,7 +171,7 @@ int main( int argc, char **argv )
 	
 	// file error check
 	if( !(fin = fopen( argv[1], "rb" )) ){
-		printf( "ERROR: Could not open %s !!\n", argv[1] );
+		printf( "ERROR: Could not open %s\n", argv[1] );
 		goto cleanup_exit;
 	}
 	
@@ -179,10 +192,12 @@ ext_error:
 	DPK_LoadHeader( dpkHeader, fin );
 	
 	// header error check
-	if( !DPK_CheckHeader( dpkHeader ) )
+	if( DPK_CheckHeader( dpkHeader ) < 0 )
 		goto cleanup_free;
 	
-	if( dpkEndianFlag )
+	// make dpkHeader usable on host
+	if(( dpkEndianFlag == CM_ENDIAN_BIG ) && ( CM_IsLittleEndian() )
+	|| ( dpkEndianFlag == CM_ENDIAN_LIL ) && ( CM_IsBigEndian() ))
 		DPK_ReverseHeader( dpkHeader );
 	
 	printf( "dpkHeader->format_id  : %.4s\n", (char *)&dpkHeader->format_id );
@@ -197,12 +212,14 @@ ext_error:
 	dpkEntryTable = malloc( dpkHeader->entry_num * sizeof(DPK_ENTRY) );
 	DPK_LoadEntryTable( dpkEntryTable, dpkHeader, fin );
 	
-	if( dpkEndianFlag )
+	// make dpkEntryTable usable on host
+	if(( dpkEndianFlag == CM_ENDIAN_BIG ) && ( CM_IsLittleEndian() )
+	|| ( dpkEndianFlag == CM_ENDIAN_LIL ) && ( CM_IsBigEndian() ))
 		DPK_ReverseEntryTable( dpkEntryTable, dpkHeader );
 	
 	char *outdir = malloc( strlen(argv[1])+1 ); // +1 for NULL byte
 	
-	if( !DPK_CreateOutputDir( outdir, argv[1] ) )
+	if( DPK_CreateOutputDir( outdir, argv[1] ) < 0 )
 		goto cleanup_free;
 	
 	// table header
@@ -216,7 +233,7 @@ ext_error:
 			dpkEntryTable[i].length,
 			dpkEntryTable[i].checksum );
 		
-		if( !DPK_ExtractFile( dpkEntryTable, i, fin, fout, fout_name, outdir ) )
+		if( DPK_ExtractFile( dpkEntryTable, i, fin, fout, fout_name, outdir ) < 0 )
 			goto cleanup_free;
 	}
 	
