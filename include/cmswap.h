@@ -8,9 +8,9 @@
 #include "cmconf.h"  /* type flags */
 #include "cmtypes.h" /* typedefs   */
 
-/*---------------------------------------------------------------------------*
- * Public Interface (Cast to Signed/Unsigned)
- *---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+/* Public Interface (Cast to Signed/Unsigned)                                */
+/*---------------------------------------------------------------------------*/
 #define CM_ByteSwapS16(val)   (s16)CM_ByteSwap16((u16)val)
 #define CM_ByteSwapU16(val)   (u16)CM_ByteSwap16((u16)val)
 
@@ -25,9 +25,9 @@
 #define CM_ByteSwapU128(val)  (u128)CM_ByteSwap128((u128)val)
 #endif
 
-/*---------------------------------------------------------------------------*
- * Reverse Endianness for Integer Types
- *---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+/* Reverse Endianness for Integer Types                                      */
+/*---------------------------------------------------------------------------*/
 static inline uint16 CM_ByteSwap16( uint16 val )
 {
 	union16 in = (union16)val, out;
@@ -104,9 +104,9 @@ static inline uint128 CM_ByteSwap128( uint128 val )
 }
 #endif /* HASTYPE_INT128 */
 
-/*---------------------------------------------------------------------------*
- * Reverse Endianness for Floating Point Types
- *---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+/* Reverse Endianness for Floating Point Types                               */
+/*---------------------------------------------------------------------------*/
 static inline float32 CM_ByteSwapF32( float32 val )
 {
 	union32 in = (union32)val, out;
@@ -173,9 +173,9 @@ static inline float128 CM_ByteSwapF128( float128 val )
 }
 #endif /* HASTYPE_FLOAT128 */
 
-/*---------------------------------------------------------------------------*
- * Reverse Endianness (Pass by Reference)
- *---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+/* Reverse Endianness (Pass by Reference)                                    */
+/*---------------------------------------------------------------------------*/
 static inline void CM_ByteSwap16R( void *val )
 {
 	union16 *in = (union16 *)val;
@@ -236,9 +236,9 @@ static inline void CM_ByteSwap128R( void *val )
 }
 #endif /* HASTYPE_INT128 */
 
-/*---------------------------------------------------------------------------*
- * Get Native Endianness
- *---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+/* Get Native Endianness                                                     */
+/*---------------------------------------------------------------------------*/
 #define CM_ENDIAN_LIL (0)
 #define CM_ENDIAN_BIG (1)
 
@@ -262,4 +262,4 @@ static inline bool8 CM_IsLittleEndian( void )
 #endif /* END OF FILE */
 /*---------------------------------------------------------------------------*/
 /* -*- indent-tabs-mode: t; tab-width: 4; mode: c; -*- */
-/* vim: set noet ts=4 sw=4 ft=c ff=dos fenc=utf-8 : */
+/* vim: set noet ts=4 sw=4 ft=c ff=unix fenc=utf-8 : */
