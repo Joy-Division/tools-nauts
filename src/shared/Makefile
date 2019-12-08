@@ -37,7 +37,7 @@ install: $(TARGET)
 clean:\
 	clean_obj \
 	clean_lib \
-	clean_exe
+	clean_inst
 
 clean_obj:
 	-rm *.o *.obj
