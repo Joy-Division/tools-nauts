@@ -14,7 +14,7 @@
 #include "cmtypes.h"
 #include "cmswap.h"
 #include "cmutil.h"
-#include "mkpath.h"
+#include "shared.h"
 
 #define MAX_PATH_CHAR 260
 
