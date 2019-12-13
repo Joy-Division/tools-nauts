@@ -5,8 +5,7 @@
 #ifndef INC_CMSWAP_H
 #define INC_CMSWAP_H
 
-#include "cmconf.h"  /* type flags */
-#include "cmtypes.h" /* typedefs   */
+#include "cmtypes.h"
 
 /*---------------------------------------------------------------------------*/
 /* Public Interface (Cast to Signed/Unsigned)                                */
