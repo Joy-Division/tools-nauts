@@ -7,7 +7,7 @@
 
 #include "cmtypes.h"
 
-#if defined( HASTYPE_INT128 )
+#if defined( CM_HAVE_INT128 )
 
 /*---------------------------------------------------------------------------*/
 /* 128-bit Setter Functions                                                  */
@@ -20,7 +20,7 @@ uint64 hi64,  /* upper 64b   */
 uint64 lo64   /* lower 64b   */
 ){
 	union128 *tmp = (union128 *)dst;
-#ifdef TARGET_BIG_ENDIAN
+#ifdef CM_TARGET_BE
 	tmp->u64[0] = hi64;
 	tmp->u64[1] = lo64;
 #else
@@ -38,7 +38,7 @@ uint32 lo32a, /*   lower 32b */
 uint32 lo32b  /*  lowest 32b */
 ){
 	union128 *tmp = (union128 *)dst;
-#ifdef TARGET_BIG_ENDIAN
+#ifdef CM_TARGET_BE
 	tmp->u32[0] = hi32a; tmp->u32[1] = hi32b;
 	tmp->u32[2] = lo32a; tmp->u32[3] = lo32b;
 #else
@@ -56,7 +56,7 @@ uint16 lo16a, uint16 lo16b, /*   lower 32b */
 uint16 lo16c, uint16 lo16d  /*  lowest 32b */
 ){
 	union128 *tmp = (union128 *)dst;
-#ifdef TARGET_BIG_ENDIAN
+#ifdef CM_TARGET_BE
 	tmp->u16[0] = hi16a; tmp->u16[1] = hi16b;
 	tmp->u16[2] = hi16c; tmp->u16[3] = hi16d;
 	tmp->u16[4] = lo16a; tmp->u16[5] = lo16b;
@@ -82,7 +82,7 @@ uint8 lo08e, uint8 lo08f, /*   lower 16b of lower 64b */
 uint8 lo08g, uint8 lo08h  /*  lowest 16b of lower 64b */
 ){
 	union128 *tmp = (union128 *)dst;
-#ifdef TARGET_BIG_ENDIAN
+#ifdef CM_TARGET_BE
 	tmp->u8[ 0] = hi08a; tmp->u8[ 1] = hi08b;
 	tmp->u8[ 2] = hi08c; tmp->u8[ 3] = hi08d;
 	tmp->u8[ 4] = hi08e; tmp->u8[ 5] = hi08f;
@@ -103,7 +103,7 @@ uint8 lo08g, uint8 lo08h  /*  lowest 16b of lower 64b */
 #endif
 }
 
-#endif /* HASTYPE_INT128 */
+#endif /* CM_HAVE_INT128 */
 /*---------------------------------------------------------------------------*/
 #endif /* END OF FILE */
 /*---------------------------------------------------------------------------*/

@@ -16,18 +16,20 @@
 #include "cmutil.h"
 #include "shared.h"
 
-#define MAX_PATH_CHAR 260
+#ifndef MAX_PATH
+#define MAX_PATH 260
+#endif
 
 /*---------------------------------------------------------------------------*/
 
 #include "dpk_extract.h"
 #include "fmt_data.h"
 
-static bool dpkEndianFlag;
+static char dpkEndianFlag;
 
-/*---------------------------------------------------------------------------*/
-// DPK Header
-/*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*
+ * DPK Header
+ *---------------------------------------------------------------------------*/
 void DPK_LoadHeader( DPK_HEADER *head, FILE *dpk )
 {
 	fseek( dpk, 0, SEEK_SET );
@@ -36,10 +38,10 @@ void DPK_LoadHeader( DPK_HEADER *head, FILE *dpk )
 
 void DPK_ReverseHeader( DPK_HEADER *head )
 {
-	CM_ByteSwap32R( &head->block_size );
-	CM_ByteSwap32R( &head->entry_num );
-	CM_ByteSwap32R( &head->entry_end );
-	CM_ByteSwap32R( &head->entry_size );
+	CM_ByteSwapR32( &head->block_size );
+	CM_ByteSwapR32( &head->entry_num );
+	CM_ByteSwapR32( &head->entry_end );
+	CM_ByteSwapR32( &head->entry_size );
 }
 
 int DPK_CheckHeader( DPK_HEADER *head )
@@ -63,11 +65,11 @@ int DPK_CheckHeader( DPK_HEADER *head )
 	// check attribute
 	if(( head->attribute == DPK_ATTR_LE )
 	&& ( head->format_id == id_le.u32 )){
-		dpkEndianFlag = CM_ENDIAN_LIL;
+		dpkEndianFlag = CM_ENDIAN_ID_LE;
 	}
 	else if(( head->attribute == DPK_ATTR_BE )
 	/**/ && ( head->format_id == id_be.u32 )){
-		dpkEndianFlag = CM_ENDIAN_BIG;
+		dpkEndianFlag = CM_ENDIAN_ID_BE;
 	} else {
 		printf( "\nERROR: Invalid Attribute\n" );
 		printf( "Expected : 0x%08x or 0x%08x\n", DPK_ATTR_LE, DPK_ATTR_BE );
@@ -80,9 +82,9 @@ int DPK_CheckHeader( DPK_HEADER *head )
 	return OK;
 }
 
-/*---------------------------------------------------------------------------*/
-// DPK Entry Table
-/*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*
+ * DPK Entry Table
+ *---------------------------------------------------------------------------*/
 void DPK_LoadEntryTable( DPK_ENTRY *table, DPK_HEADER *head, FILE *dpk )
 {
 	fseek( dpk, sizeof(DPK_HEADER), SEEK_SET );
@@ -92,15 +94,15 @@ void DPK_LoadEntryTable( DPK_ENTRY *table, DPK_HEADER *head, FILE *dpk )
 void DPK_ReverseEntryTable( DPK_ENTRY *table, DPK_HEADER *head )
 {
 	for( int i=0 ; i < head->entry_num ; i++ ){
-		CM_ByteSwap32R( &table[i].offset );
-		CM_ByteSwap32R( &table[i].length );
-		CM_ByteSwap32R( &table[i].checksum );
+		CM_ByteSwapR32( &table[i].offset );
+		CM_ByteSwapR32( &table[i].length );
+		CM_ByteSwapR32( &table[i].checksum );
 	}
 }
 
-/*---------------------------------------------------------------------------*/
-// DPK File Extract
-/*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*
+ * DPK File Extract
+ *---------------------------------------------------------------------------*/
 int DPK_CreateOutputDir( char *dir, char *arg )
 {
 	// copy filename
@@ -125,7 +127,7 @@ FILE        *out,   /* ouput file ptr  */
 char        *name,  /* ouput file name */
 char        *dir    /* ouput file dir  */
 ){
-	snprintf( name, MAX_PATH_CHAR, "%s/%.12s", dir, table[index].name );
+	snprintf( name, MAX_PATH, "%s/%.12s", dir, table[index].name );
 	
 	MakePath( name );
 	
@@ -148,14 +150,14 @@ char        *dir    /* ouput file dir  */
 	return OK;
 }
 
-/*---------------------------------------------------------------------------*/
-// Program Control Flow
-/*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*
+ * Program Control Flow
+ *---------------------------------------------------------------------------*/
 #ifndef BUILD_LIBRARY
 int main( int argc, char **argv )
 {
 	FILE *fin, *fout;
-	char fout_name[ MAX_PATH_CHAR ] = { 0 };
+	char fout_name[ MAX_PATH ] = { 0 };
 	
 	DPK_HEADER *dpkHeader;
 	DPK_ENTRY  *dpkEntryTable;
@@ -196,8 +198,8 @@ ext_error:
 		goto cleanup_free;
 	
 	// make dpkHeader usable on host
-	if(( dpkEndianFlag == CM_ENDIAN_BIG ) && ( CM_IsLittleEndian() )
-	|| ( dpkEndianFlag == CM_ENDIAN_LIL ) && ( CM_IsBigEndian() ))
+	if(( dpkEndianFlag == CM_ENDIAN_ID_BE ) && ( CM_IsLittleEndian() )
+	|| ( dpkEndianFlag == CM_ENDIAN_ID_LE ) && ( CM_IsBigEndian() ))
 		DPK_ReverseHeader( dpkHeader );
 	
 	printf( "dpkHeader->format_id  : %.4s\n", (char *)&dpkHeader->format_id );
@@ -213,8 +215,8 @@ ext_error:
 	DPK_LoadEntryTable( dpkEntryTable, dpkHeader, fin );
 	
 	// make dpkEntryTable usable on host
-	if(( dpkEndianFlag == CM_ENDIAN_BIG ) && ( CM_IsLittleEndian() )
-	|| ( dpkEndianFlag == CM_ENDIAN_LIL ) && ( CM_IsBigEndian() ))
+	if(( dpkEndianFlag == CM_ENDIAN_ID_BE ) && ( CM_IsLittleEndian() )
+	|| ( dpkEndianFlag == CM_ENDIAN_ID_LE ) && ( CM_IsBigEndian() ))
 		DPK_ReverseEntryTable( dpkEntryTable, dpkHeader );
 	
 	char *outdir = malloc( strlen(argv[1])+1 ); // +1 for NULL byte
@@ -251,8 +253,8 @@ cleanup_exit:
 }
 #endif /* !BUILD_LIBRARY */
 
-/*---------------------------------------------------------------------------*/
-// END OF FILE
-/*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*
+ * END OF FILE
+ *---------------------------------------------------------------------------*/
 /* -*- indent-tabs-mode: t; tab-width: 4; mode: c; -*- */
 /* vim: set noet ts=4 sw=4 ft=c ff=dos fenc=utf-8 : */

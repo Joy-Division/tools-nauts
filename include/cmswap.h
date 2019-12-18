@@ -8,6 +8,12 @@
 #include "cmtypes.h"
 
 /*---------------------------------------------------------------------------*/
+/* Public Definitions                                                        */
+/*---------------------------------------------------------------------------*/
+#define CM_ENDIAN_ID_LE  'L' /* Unique ID for Little Endian */
+#define CM_ENDIAN_ID_BE  'B' /* Unique ID for Big Endian    */
+
+/*---------------------------------------------------------------------------*/
 /* Public Interface (Cast to Signed/Unsigned)                                */
 /*---------------------------------------------------------------------------*/
 #define CM_ByteSwapS16(val)   (s16)CM_ByteSwap16((u16)val)
@@ -19,7 +25,7 @@
 #define CM_ByteSwapS64(val)   (s64)CM_ByteSwap64((u64)val)
 #define CM_ByteSwapU64(val)   (u64)CM_ByteSwap64((u64)val)
 
-#ifdef HASTYPE_INT128
+#if defined( CM_HAVE_INT128 )
 #define CM_ByteSwapS128(val)  (s128)CM_ByteSwap128((u128)val)
 #define CM_ByteSwapU128(val)  (u128)CM_ByteSwap128((u128)val)
 #endif
@@ -41,7 +47,7 @@ static inline uint32 CM_ByteSwap32( uint32 val )
 {
 	union32 in = (union32)val, out;
 	
-#ifdef CHAINED_BYTESWAP
+#ifdef CM_CHAIN_BYTESWAP
 	out.u16[0] = CM_ByteSwap16( in.u16[1] );
 	out.u16[1] = CM_ByteSwap16( in.u16[0] );
 #else
@@ -57,7 +63,7 @@ static inline uint64 CM_ByteSwap64( uint64 val )
 {
 	union64 in = (union64)val, out;
 	
-#ifdef CHAINED_BYTESWAP
+#ifdef CM_CHAIN_BYTESWAP
 	out.u32[0] = CM_ByteSwap32( in.u32[1] );
 	out.u32[1] = CM_ByteSwap32( in.u32[0] );
 #else
@@ -73,12 +79,12 @@ static inline uint64 CM_ByteSwap64( uint64 val )
 	return out.u64;
 }
 
-#if defined( HASTYPE_INT128 )
+#if defined( CM_HAVE_INT128 )
 static inline uint128 CM_ByteSwap128( uint128 val )
 {
 	union128 in = (union128)val, out;
 	
-#ifdef CHAINED_BYTESWAP
+#ifdef CM_CHAIN_BYTESWAP
 	out.u64[0] = CM_ByteSwap64( in.u64[1] );
 	out.u64[1] = CM_ByteSwap64( in.u64[0] );
 #else
@@ -101,7 +107,7 @@ static inline uint128 CM_ByteSwap128( uint128 val )
 #endif
 	return out.u128;
 }
-#endif /* HASTYPE_INT128 */
+#endif /* CM_HAVE_INT128 */
 
 /*---------------------------------------------------------------------------*/
 /* Reverse Endianness for Floating Point Types                               */
@@ -110,7 +116,7 @@ static inline float32 CM_ByteSwapF32( float32 val )
 {
 	union32 in = (union32)val, out;
 	
-#ifdef CHAINED_BYTESWAP
+#ifdef CM_CHAIN_BYTESWAP
 	out.u16[0] = CM_ByteSwap16( in.u16[1] );
 	out.u16[1] = CM_ByteSwap16( in.u16[0] );
 #else
@@ -126,7 +132,7 @@ static inline float64 CM_ByteSwapF64( float64 val )
 {
 	union64 in = (union64)val, out;
 	
-#ifdef CHAINED_BYTESWAP
+#ifdef CM_CHAIN_BYTESWAP
 	out.u32[0] = CM_ByteSwap32( in.u32[1] );
 	out.u32[1] = CM_ByteSwap32( in.u32[0] );
 #else
@@ -142,12 +148,12 @@ static inline float64 CM_ByteSwapF64( float64 val )
 	return out.f64;
 }
 
-#if defined( HASTYPE_FLOAT128 )
+#if defined( CM_HAVE_FLOAT128 )
 static inline float128 CM_ByteSwapF128( float128 val )
 {
 	union128 in = (union128)val, out;
 	
-#ifdef CHAINED_BYTESWAP
+#ifdef CM_CHAIN_BYTESWAP
 	out.u64[0] = CM_ByteSwap64( in.u64[1] );
 	out.u64[1] = CM_ByteSwap64( in.u64[0] );
 #else
@@ -170,23 +176,23 @@ static inline float128 CM_ByteSwapF128( float128 val )
 #endif
 	return out.f128;
 }
-#endif /* HASTYPE_FLOAT128 */
+#endif /* CM_HAVE_FLOAT128 */
 
 /*---------------------------------------------------------------------------*/
 /* Reverse Endianness (Pass by Reference)                                    */
 /*---------------------------------------------------------------------------*/
-static inline void CM_ByteSwap16R( void *val )
+static inline void CM_ByteSwapR16( void *ref )
 {
-	union16 *in = (union16 *)val;
+	union16 *in = (union16 *)ref;
 	union16 tmp; tmp.u16 = in->u16;
 	
 	in->u8[0] = tmp.u8[1];
 	in->u8[1] = tmp.u8[0];
 }
 
-static inline void CM_ByteSwap32R( void *val )
+static inline void CM_ByteSwapR32( void *ref )
 {
-	union32 *in = (union32 *)val;
+	union32 *in = (union32 *)ref;
 	union32 tmp; tmp.u32 = in->u32;
 	
 	in->u8[0] = tmp.u8[3];
@@ -195,9 +201,9 @@ static inline void CM_ByteSwap32R( void *val )
 	in->u8[3] = tmp.u8[0];
 }
 
-static inline void CM_ByteSwap64R( void *val )
+static inline void CM_ByteSwapR64( void *ref )
 {
-	union64 *in = (union64 *)val;
+	union64 *in = (union64 *)ref;
 	union64 tmp; tmp.u64 = in->u64;
 	
 	in->u8[0] = tmp.u8[7];
@@ -210,10 +216,10 @@ static inline void CM_ByteSwap64R( void *val )
 	in->u8[7] = tmp.u8[0];
 }
 
-#if defined( HASTYPE_INT128 )
-static inline void CM_ByteSwap128R( void *val )
+#if defined( CM_HAVE_INT128 )
+static inline void CM_ByteSwapR128( void *ref )
 {
-	union128 *in = (union128 *)val;
+	union128 *in = (union128 *)ref;
 	union128 tmp; tmp.u128 = in->u128;
 	
 	in->u8[ 0] = tmp.u8[15];
@@ -233,14 +239,11 @@ static inline void CM_ByteSwap128R( void *val )
 	in->u8[14] = tmp.u8[ 1];
 	in->u8[15] = tmp.u8[ 0];
 }
-#endif /* HASTYPE_INT128 */
+#endif /* CM_HAVE_INT128 */
 
 /*---------------------------------------------------------------------------*/
 /* Get Native Endianness                                                     */
 /*---------------------------------------------------------------------------*/
-#define CM_ENDIAN_LIL (0)
-#define CM_ENDIAN_BIG (1)
-
 static inline bool8 CM_IsBigEndian( void )
 {
 	u_int32 test_val = 0x01FFFF00;
