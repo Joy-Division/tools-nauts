@@ -14,17 +14,26 @@ extern "C" {
 #endif
 
 /*---------------------------------------------------------------------------*
+ * DPK Work
+ *---------------------------------------------------------------------------*/
+typedef struct {
+	DPK_HEADER *dpkHeader;      // pointer to DPK_HEADER buffer
+	DPK_ENTRY  *dpkEntryTable;  // pointer to DPK_ENTRY array buffer
+	char        dpkEndianFlag;  // DPK file endianness
+} dpkWork;
+
+/*---------------------------------------------------------------------------*
  * DPK Header
  *---------------------------------------------------------------------------*/
-void DPK_LoadHeader    ( DPK_HEADER *head, FILE *dpk );
-void DPK_ReverseHeader ( DPK_HEADER *head );
-int  DPK_CheckHeader   ( DPK_HEADER *head );
+void DPK_HeaderLoad    ( dpkWork *work, FILE *dpk );
+void DPK_HeaderReverse ( dpkWork *work );
+int  DPK_HeaderCheck   ( dpkWork *work );
 
 /*---------------------------------------------------------------------------*
  * DPK Entry Table
  *---------------------------------------------------------------------------*/
-void DPK_LoadEntryTable    ( DPK_ENTRY *table, DPK_HEADER *head, FILE *dpk );
-void DPK_ReverseEntryTable ( DPK_ENTRY *table, DPK_HEADER *head );
+void DPK_EntryTableLoad    ( dpkWork *work, FILE *dpk );
+void DPK_EntryTableReverse ( dpkWork *work );
 
 /*---------------------------------------------------------------------------*
  * DPK File Extract
@@ -32,12 +41,12 @@ void DPK_ReverseEntryTable ( DPK_ENTRY *table, DPK_HEADER *head );
 int DPK_CreateOutputDir( char *dir, char *arg );
 
 int DPK_ExtractFile(
-DPK_ENTRY   *table, /* DPK entry table */
-u_int       index,  /* DPK entry index */
-FILE        *dpk,   /* DPK file ptr    */
-FILE        *out,   /* ouput file ptr  */
-char        *name,  /* ouput file name */
-char        *dir    /* ouput file dir  */
+dpkWork *work,  /* DPK work struct */
+u_int   index,  /* DPK entry index */
+FILE    *dpk,   /* DPK file ptr    */
+FILE    *out,   /* ouput file ptr  */
+char    *name,  /* ouput file name */
+char    *dir    /* ouput file dir  */
 );
 
 #ifdef __cplusplus
