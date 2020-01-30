@@ -3,11 +3,30 @@
 .vscode
 .vs
 
-# Binaries
+# *NIX Binaries
 #-------------------------
 *.[Oo]
 *.[Aa]
+*.[Ss][Oo]
 *.[Ee][Ll][Ff]
+*.[Mm][Aa][Pp]
+
+# MSVC Binaries
+#-------------------------
 *.[Oo][Bb][Jj]
 *.[Ll][Ii][Bb]
 *.[Ee][Xx][Ee]
+*.[Dd][Ll][Ll]
+*.[Pp][Dd][Bb]
+
+# Other Artifacts
+#-------------------------
+*.[Oo].[Tt][Xx][Tt]
+
+# Excludes
+#-------------------------
+
+
+# Includes
+#-------------------------
+!.gitkeep
