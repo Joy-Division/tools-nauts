@@ -1,3 +1,4 @@
+#!/usr/bin/env make
 #
 # POLICENAUTS Toolbox
 # Top-Level Makefile
@@ -12,9 +13,14 @@ MKDIR  = $(TOP)/make
 #include $(MKDIR)/mkdefs.mk
 
 #---------------------------------------------------------------------------#
+# RULES & DEFINES
+#---------------------------------------------------------------------------#
 
 SRCDIR = $(TOP)/src
+MAKEFILE ?= Makefile
 
+#---------------------------------------------------------------------------#
+# BUILD & INSTALL
 #---------------------------------------------------------------------------#
 
 all: shared tools install
@@ -23,27 +29,29 @@ shared:
 	$(MAKE) -C $(SRCDIR)/shared install
 
 tools:
-	$(MAKE) -C $(SRCDIR)/dpk $@
-#	$(MAKE) -C $(SRCDIR)/pac $@
-#	$(MAKE) -C $(SRCDIR)/sound $@
+	$(MAKE) -C $(SRCDIR)/dpk   -f$(MAKEFILE) $@
+#	$(MAKE) -C $(SRCDIR)/pac   -f$(MAKEFILE) $@
+#	$(MAKE) -C $(SRCDIR)/sound -f$(MAKEFILE) $@
 
 install:
-	$(MAKE) -C $(SRCDIR)/dpk $@
-#	$(MAKE) -C $(SRCDIR)/pac $@
-#	$(MAKE) -C $(SRCDIR)/sound $@
+	$(MAKE) -C $(SRCDIR)/dpk   -f$(MAKEFILE) $@
+#	$(MAKE) -C $(SRCDIR)/pac   -f$(MAKEFILE) $@
+#	$(MAKE) -C $(SRCDIR)/sound -f$(MAKEFILE) $@
 
 #---------------------------------------------------------------------------#
+# CLEANUP
+#---------------------------------------------------------------------------#
 
-clean_all:\
-	clean \
-	clean_lib
+clean_all: clean clean_inst
 
 clean:
-	$(MAKE) -C $(SRCDIR)/shared $@
-	$(MAKE) -C $(SRCDIR)/dpk $@
-#	$(MAKE) -C $(SRCDIR)/pac $@
-#	$(MAKE) -C $(SRCDIR)/sound $@
+	$(MAKE) -C $(SRCDIR)/shared -f$(MAKEFILE) $@
+	$(MAKE) -C $(SRCDIR)/dpk    -f$(MAKEFILE) $@
+#	$(MAKE) -C $(SRCDIR)/pac    -f$(MAKEFILE) $@
+#	$(MAKE) -C $(SRCDIR)/sound  -f$(MAKEFILE) $@
 
-clean_lib:
-	-rm $(LIBDIR)/*.a
-	-rm $(LIBDIR)/*.lib
+clean_inst:
+	$(MAKE) -C $(SRCDIR)/shared -f$(MAKEFILE) $@
+	$(MAKE) -C $(SRCDIR)/dpk    -f$(MAKEFILE) $@
+#	$(MAKE) -C $(SRCDIR)/pac    -f$(MAKEFILE) $@
+#	$(MAKE) -C $(SRCDIR)/sound  -f$(MAKEFILE) $@
