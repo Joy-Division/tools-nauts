@@ -6,13 +6,13 @@
 /*---------------------------------------------------------------------------*
  * DPK Format Defines
  *---------------------------------------------------------------------------*/
-#define DPK_FORMAT_ID   'DIRF'
-#define DPK_BLOCK_SIZE  0x800
+#define DPK_FORMAT_ID   'DIRF' // Magic Number
+#define DPK_BLOCK_SIZE  0x800  // CDROM Sector
 
-// --------------------------
-// Little Endian : 0b11100000
-// Big Endian    : 0b10100000
-// --------------------------
+/* -------------------------- */
+/* Little Endian : 0b11100000 */
+/* Big Endian    : 0b10100000 */
+/* -------------------------- */
 #ifdef CM_TARGET_BE
 #define DPK_ATTR_LE  0x000000E0 // swapped for BE target
 #define DPK_ATTR_BE  0xA0000000
