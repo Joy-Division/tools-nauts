@@ -1,6 +1,9 @@
 /*
  * POLICENAUTS Toolbox
  * DPK File Extractor
+ *
+ * Copyright (C) 2017 2020 J.Ingram
+ * Special thanks to Missingno_force
  */
 #ifndef INC_DPK_EXTRACT_H
 #define INC_DPK_EXTRACT_H

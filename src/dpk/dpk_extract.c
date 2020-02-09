@@ -2,7 +2,7 @@
  * POLICENAUTS Toolbox
  * DPK File Extractor
  *
- * Jonathan Ingram (2017～2019)
+ * Copyright (C) 2017 2020 J.Ingram
  * Special thanks to Missingno_force
  */
 #include <stdlib.h>
@@ -34,16 +34,16 @@ void DPK_HeaderLoad( dpkWork *work, FILE *dpk )
 
 void DPK_HeaderReverse( dpkWork *work )
 {
-	CM_ByteSwapR32( &work->dpkHeader->block_size );
-	CM_ByteSwapR32( &work->dpkHeader->entry_num );
-	CM_ByteSwapR32( &work->dpkHeader->entry_end );
-	CM_ByteSwapR32( &work->dpkHeader->entry_size );
+	CM_SwapR32( &work->dpkHeader->block_size );
+	CM_SwapR32( &work->dpkHeader->entry_num );
+	CM_SwapR32( &work->dpkHeader->entry_end );
+	CM_SwapR32( &work->dpkHeader->entry_size );
 }
 
 int DPK_HeaderCheck( dpkWork *work )
 {
-	union32 id_be = { .u8 = {'D','I','R','F'} };
-	union32 id_le = { .u8 = {'F','R','I','D'} };
+	union32 id_be = {.u8 = {'D','I','R','F'}};
+	union32 id_le = {.u8 = {'F','R','I','D'}};
 	
 	// check format ID
 	if(( work->dpkHeader->format_id != id_le.u32 )
@@ -87,9 +87,9 @@ void DPK_EntryTableLoad( dpkWork *work, FILE *dpk )
 void DPK_EntryTableReverse( dpkWork *work )
 {
 	for( int i=0 ; i < work->dpkHeader->entry_num ; i++ ){
-		CM_ByteSwapR32( &work->dpkEntryTable[i].offset );
-		CM_ByteSwapR32( &work->dpkEntryTable[i].length );
-		CM_ByteSwapR32( &work->dpkEntryTable[i].checksum );
+		CM_SwapR32( &work->dpkEntryTable[i].offset );
+		CM_SwapR32( &work->dpkEntryTable[i].length );
+		CM_SwapR32( &work->dpkEntryTable[i].checksum );
 	}
 }
 
@@ -157,6 +157,9 @@ int main( int argc, char **argv )
 		.dpkEntryTable = NULL,
 		.dpkEndianFlag = -1
 	};
+	
+	printf( "DPK Extract (C) 2017 2020 J.Ingram\n" );
+	printf( "Built on %s at %s\n\n", __DATE__, __TIME__ );
 	
 /*///////////////////////////////////////////////////////////////////////////*/
 	
