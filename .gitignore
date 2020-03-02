@@ -3,7 +3,7 @@
 .vscode
 .vs
 
-# *NIX Binaries
+# *NIX Output
 #-------------------------
 *.[Oo]
 *.[Aa]
@@ -11,7 +11,7 @@
 *.[Ee][Ll][Ff]
 *.[Mm][Aa][Pp]
 
-# MSVC Binaries
+# MSVC Win32 Output
 #-------------------------
 *.[Oo][Bb][Jj]
 *.[Ll][Ii][Bb]
