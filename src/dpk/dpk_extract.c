@@ -29,15 +29,15 @@
 void DPK_HeaderLoad( dpkWork *work, FILE *dpk )
 {
 	fseek( dpk, 0, SEEK_SET );
-	fread( work->dpkHeader, sizeof(DPK_HEADER), 1, dpk );
+	fread( work->header, sizeof(DPK_HEADER), 1, dpk );
 }
 
 void DPK_HeaderReverse( dpkWork *work )
 {
-	CM_SwapR32( &work->dpkHeader->block_size );
-	CM_SwapR32( &work->dpkHeader->entry_num );
-	CM_SwapR32( &work->dpkHeader->entry_end );
-	CM_SwapR32( &work->dpkHeader->entry_size );
+	CM_SwapR32( &work->header->block_size );
+	CM_SwapR32( &work->header->entry_num );
+	CM_SwapR32( &work->header->entry_end );
+	CM_SwapR32( &work->header->entry_size );
 }
 
 int DPK_HeaderCheck( dpkWork *work )
@@ -46,27 +46,27 @@ int DPK_HeaderCheck( dpkWork *work )
 	union32 id_le = {.u8 = {'F','R','I','D'}};
 	
 	// check format ID
-	if(( work->dpkHeader->format_id != id_le.u32 )
-	&& ( work->dpkHeader->format_id != id_be.u32 ))
+	if(( work->header->format_id != id_le.u32 )
+	&& ( work->header->format_id != id_be.u32 ))
 	{
 		printf( "\nERROR: Invalid Format ID\n" );
 		printf( "Expected : 'DIRF' or 'FRID'\n" );
-		printf( "Found    : '%.4s'\n", (char *)&work->dpkHeader->format_id );
+		printf( "Found    : '%.4s'\n", (char *)&work->header->format_id );
 		return NG;
 	}
 	
 	// check attribute
-	if(( work->dpkHeader->attribute == DPK_ATTR_LE )
-	&& ( work->dpkHeader->format_id == id_le.u32 )){
-		work->dpkEndianFlag = CM_ENDIAN_ID_LE;
+	if(( work->header->attribute == DPK_ATTR_LE )
+	&& ( work->header->format_id == id_le.u32 )){
+		work->endian_flag = CM_ENDIAN_ID_LE;
 	}
-	else if(( work->dpkHeader->attribute == DPK_ATTR_BE )
-	/**/ && ( work->dpkHeader->format_id == id_be.u32 )){
-		work->dpkEndianFlag = CM_ENDIAN_ID_BE;
+	else if(( work->header->attribute == DPK_ATTR_BE )
+	/**/ && ( work->header->format_id == id_be.u32 )){
+		work->endian_flag = CM_ENDIAN_ID_BE;
 	} else {
 		printf( "\nERROR: Invalid Attribute\n" );
 		printf( "Expected : 0x%08x or 0x%08x\n", DPK_ATTR_LE, DPK_ATTR_BE );
-		printf( "Found    : 0x%08x\n", work->dpkHeader->attribute );
+		printf( "Found    : 0x%08x\n", work->header->attribute );
 		return NG;
 	}
 	
@@ -81,15 +81,15 @@ int DPK_HeaderCheck( dpkWork *work )
 void DPK_EntryTableLoad( dpkWork *work, FILE *dpk )
 {
 	fseek( dpk, sizeof(DPK_HEADER), SEEK_SET );
-	fread( work->dpkEntryTable, sizeof(DPK_ENTRY), work->dpkHeader->entry_num, dpk );
+	fread( work->entry_table, sizeof(DPK_ENTRY), work->header->entry_num, dpk );
 }
 
 void DPK_EntryTableReverse( dpkWork *work )
 {
-	for( int i=0 ; i < work->dpkHeader->entry_num ; i++ ){
-		CM_SwapR32( &work->dpkEntryTable[i].offset );
-		CM_SwapR32( &work->dpkEntryTable[i].length );
-		CM_SwapR32( &work->dpkEntryTable[i].checksum );
+	for( int i=0 ; i < work->header->entry_num ; i++ ){
+		CM_SwapR32( &work->entry_table[i].offset );
+		CM_SwapR32( &work->entry_table[i].length );
+		CM_SwapR32( &work->entry_table[i].checksum );
 	}
 }
 
@@ -120,7 +120,7 @@ FILE    *out,   /* ouput file ptr  */
 char    *name,  /* ouput file name */
 char    *dir    /* ouput file dir  */
 ){
-	snprintf( name, MAX_PATH, "%s/%.12s", dir, work->dpkEntryTable[index].name );
+	snprintf( name, MAX_PATH, "%s/%.12s", dir, work->entry_table[index].name );
 	
 	MakePath( name );
 	
@@ -131,11 +131,11 @@ char    *dir    /* ouput file dir  */
 		return NG;
 	}
 	
-	char *buffer = malloc( work->dpkEntryTable[index].length );
+	char *buffer = malloc( work->entry_table[index].length );
 	
-	fseek( dpk, work->dpkEntryTable[index].offset, SEEK_SET );
-	fread( buffer, work->dpkEntryTable[index].length, 1, dpk );
-	fwrite( buffer, 1, work->dpkEntryTable[index].length, out );
+	fseek( dpk, work->entry_table[index].offset, SEEK_SET );
+	fread( buffer, work->entry_table[index].length, 1, dpk );
+	fwrite( buffer, 1, work->entry_table[index].length, out );
 	
 	// cleanup
 	fclose( out );
@@ -153,9 +153,9 @@ int main( int argc, char **argv )
 	char fout_name[ MAX_PATH ] = { 0 };
 	
 	dpkWork work = {
-		.dpkHeader     = NULL,
-		.dpkEntryTable = NULL,
-		.dpkEndianFlag = -1
+		.header      = NULL,
+		.entry_table = NULL,
+		.endian_flag = -1
 	};
 	
 	printf( "DPK Extract (C) 2017 2020 J.Ingram\n" );
@@ -189,33 +189,33 @@ ext_error:
 	
 /*///////////////////////////////////////////////////////////////////////////*/
 	
-	work.dpkHeader = malloc( sizeof(DPK_HEADER) );
+	work.header = malloc( sizeof(DPK_HEADER) );
 	DPK_HeaderLoad( &work, fin );
 	
 	// header error check
 	if( DPK_HeaderCheck( &work ) < 0 )
 		goto cleanup_free;
 	
-	// make dpkHeader usable on host
-	if(( work.dpkEndianFlag == CM_ENDIAN_ID_BE ) && ( CM_IsLittleEndian() )
-	|| ( work.dpkEndianFlag == CM_ENDIAN_ID_LE ) && ( CM_IsBigEndian() ))
+	// make work->header usable on target
+	if(( work.endian_flag == CM_ENDIAN_ID_BE ) && ( CM_IsLittleEndian() )
+	|| ( work.endian_flag == CM_ENDIAN_ID_LE ) && ( CM_IsBigEndian() ))
 		DPK_HeaderReverse( &work );
 	
-	printf( "work.dpkHeader->format_id  : %.4s\n", (char *)&work.dpkHeader->format_id );
-	printf( "work.dpkHeader->attribute  : %08x\n", work.dpkHeader->attribute );
-	printf( "work.dpkHeader->block_size : %08x\n", work.dpkHeader->block_size );
-	printf( "work.dpkHeader->entry_num  : %d\n",   work.dpkHeader->entry_num );
-	printf( "work.dpkHeader->entry_end  : %08x\n", work.dpkHeader->entry_end );
-	printf( "work.dpkHeader->entry_size : %08x\n", work.dpkHeader->entry_size );
+	printf( "work.header->format_id  : %.4s\n", (char *)&work.header->format_id );
+	printf( "work.header->attribute  : %08x\n", work.header->attribute );
+	printf( "work.header->block_size : %08x\n", work.header->block_size );
+	printf( "work.header->entry_num  : %d\n",   work.header->entry_num );
+	printf( "work.header->entry_end  : %08x\n", work.header->entry_end );
+	printf( "work.header->entry_size : %08x\n", work.header->entry_size );
 	
 /*///////////////////////////////////////////////////////////////////////////*/
 	
-	work.dpkEntryTable = malloc( work.dpkHeader->entry_num * sizeof(DPK_ENTRY) );
+	work.entry_table = malloc( work.header->entry_num * sizeof(DPK_ENTRY) );
 	DPK_EntryTableLoad( &work, fin );
 	
-	// make dpkEntryTable usable on host
-	if(( work.dpkEndianFlag == CM_ENDIAN_ID_BE ) && ( CM_IsLittleEndian() )
-	|| ( work.dpkEndianFlag == CM_ENDIAN_ID_LE ) && ( CM_IsBigEndian() ))
+	// make work->entry_table usable on target
+	if(( work.endian_flag == CM_ENDIAN_ID_BE ) && ( CM_IsLittleEndian() )
+	|| ( work.endian_flag == CM_ENDIAN_ID_LE ) && ( CM_IsBigEndian() ))
 		DPK_EntryTableReverse( &work );
 	
 	char *outdir = malloc( strlen(argv[1])+1 ); // +1 for NULL byte
@@ -227,13 +227,13 @@ ext_error:
 	printf( "\n%-12s %-8s %-8s %-8s\n", "Name", "Offset", "Length", "Checksum" );
 	printf( "---------------------------------------\n" );
 	
-	for( u_int i=0 ; i < work.dpkHeader->entry_num ; i++ )
+	for( u_int i=0 ; i < work.header->entry_num ; i++ )
 	{
 		printf( "%-12s %08x %08x %08x\n",
-			work.dpkEntryTable[i].name,
-			work.dpkEntryTable[i].offset,
-			work.dpkEntryTable[i].length,
-			work.dpkEntryTable[i].checksum );
+			work.entry_table[i].name,
+			work.entry_table[i].offset,
+			work.entry_table[i].length,
+			work.entry_table[i].checksum );
 		
 		if( DPK_ExtractFile( &work, i, fin, fout, fout_name, outdir ) < 0 )
 			goto cleanup_free;
@@ -243,8 +243,8 @@ ext_error:
 	
 cleanup_free:
 	free( outdir );
-	free( work.dpkEntryTable );
-	free( work.dpkHeader );
+	free( work.entry_table );
+	free( work.header );
 cleanup_fclose:
 	fclose( fin );
 cleanup_exit:

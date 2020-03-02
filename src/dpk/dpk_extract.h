@@ -17,12 +17,12 @@ extern "C" {
 #endif
 
 /*---------------------------------------------------------------------------*
- * DPK Work
+ * DPK TOC Context
  *---------------------------------------------------------------------------*/
 typedef struct {
-	DPK_HEADER *dpkHeader;      // pointer to DPK_HEADER buffer
-	DPK_ENTRY  *dpkEntryTable;  // pointer to DPK_ENTRY array buffer
-	char        dpkEndianFlag;  // DPK file endianness
+	DPK_HEADER *header;         // pointer to DPK_HEADER buffer
+	DPK_ENTRY  *entry_table;    // pointer to DPK_ENTRY array buffer
+	char        endian_flag;    // DPK file endianness
 } dpkWork;
 
 /*---------------------------------------------------------------------------*
