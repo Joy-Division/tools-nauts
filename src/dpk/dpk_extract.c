@@ -12,8 +12,8 @@
 
 #include "cmdefs.h"
 #include "cmtypes.h"
+#include "cmutils.h"
 #include "cmswap.h"
-#include "cmutil.h"
 #include "shared.h"
 
 #ifndef MAX_PATH
@@ -58,11 +58,11 @@ int DPK_HeaderCheck( dpkWork *work )
 	// check attribute
 	if(( work->header->attribute == DPK_ATTR_LE )
 	&& ( work->header->format_id == id_le.u32 )){
-		work->endian_flag = CM_ENDIAN_ID_LE;
+		work->endian_flag = CM_LIL_ENDIAN;
 	}
 	else if(( work->header->attribute == DPK_ATTR_BE )
 	/**/ && ( work->header->format_id == id_be.u32 )){
-		work->endian_flag = CM_ENDIAN_ID_BE;
+		work->endian_flag = CM_BIG_ENDIAN;
 	} else {
 		printf( "\nERROR: Invalid Attribute\n" );
 		printf( "Expected : 0x%08x or 0x%08x\n", DPK_ATTR_LE, DPK_ATTR_BE );
@@ -197,8 +197,8 @@ ext_error:
 		goto cleanup_free;
 	
 	// make work->header usable on target
-	if(( work.endian_flag == CM_ENDIAN_ID_BE ) && ( CM_IsLittleEndian() )
-	|| ( work.endian_flag == CM_ENDIAN_ID_LE ) && ( CM_IsBigEndian() ))
+	if(( (work.endian_flag == CM_BIG_ENDIAN) && (CM_IsLilEndian()) )
+	|| ( (work.endian_flag == CM_LIL_ENDIAN) && (CM_IsBigEndian()) ))
 		DPK_HeaderReverse( &work );
 	
 	printf( "work.header->format_id  : %.4s\n", (char *)&work.header->format_id );
@@ -214,8 +214,8 @@ ext_error:
 	DPK_EntryTableLoad( &work, fin );
 	
 	// make work->entry_table usable on target
-	if(( work.endian_flag == CM_ENDIAN_ID_BE ) && ( CM_IsLittleEndian() )
-	|| ( work.endian_flag == CM_ENDIAN_ID_LE ) && ( CM_IsBigEndian() ))
+	if(( (work.endian_flag == CM_BIG_ENDIAN) && (CM_IsLilEndian()) )
+	|| ( (work.endian_flag == CM_LIL_ENDIAN) && (CM_IsBigEndian()) ))
 		DPK_EntryTableReverse( &work );
 	
 	char *outdir = malloc( strlen(argv[1])+1 ); // +1 for NULL byte

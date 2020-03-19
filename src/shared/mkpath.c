@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "cmutil.h"
+#include "cmutils.h"
 
 /*
  * Generously donated by Missingno_force

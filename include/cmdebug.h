@@ -1,88 +1,66 @@
 /*
- *【 LibCM 】by J.Ingram
+ *【 LibCM 】ver.20200314
+ * Copyright (C) 2019 2020 J.Ingram
+ * All rights reserved.
+ */
+/* cmdebug.h
  * Debugging Utilities
  */
-#ifndef INC_CMDEBUG_H
-#define INC_CMDEBUG_H
+#ifndef INCLUDED_CMDEBUG_H
+#define INCLUDED_CMDEBUG_H
 
-#include <stdio.h>  /* for printf() */
 #include <stdlib.h> /* for exit(), abort() */
+#include <stdio.h>  /* for printf(), puts() */
 
-#if !defined( CM_NODEBUG )
-
-/*---------------------------------------------------------------------------*/
-/* Assertion Macro Procedures                                                */
-/*---------------------------------------------------------------------------*/
-#define CM_ASSERT( expr )                                   \
-{                                                           \
-    if( !(expr) ){                                          \
-        printf( "%s() in %s:%u, assertion '%s' failed!\n",  \
-            __FUNCTION__, __FILE__, __LINE__, #expr );      \
-        abort();                                            \
-    }                                                       \
-}
-
-#define CM_ASSERT_MSG( expr, msg )                          \
-{                                                           \
-    if( !(expr) ){                                          \
-        printf( "%s() in %s:%u, assertion '%s' failed!\n",  \
-            __FUNCTION__, __FILE__, __LINE__, #expr );      \
-        printf( msg "\n" );                                 \
-        abort();                                            \
-    }                                                       \
-}
-
-#define CM_ASSERT_WARN( expr )                              \
-{                                                           \
-    if( !(expr) ){                                          \
-        printf( "%s() in %s:%u, assertion '%s' failed!\n",  \
-            __FUNCTION__, __FILE__, __LINE__, #expr );      \
-    }                                                       \
-}
-
-#define CM_ASSERT_WARN_MSG( expr, msg )                     \
-{                                                           \
-    if( !(expr) ){                                          \
-        printf( "%s() in %s:%u, assertion '%s' failed!\n",  \
-            __FUNCTION__, __FILE__, __LINE__, #expr );      \
-        printf( msg "\n" );                                 \
-    }                                                       \
-}
-
-#define CM_ASSERT_EXIT( expr )                              \
-{                                                           \
-    if( !(expr) ){                                          \
-        printf( "%s() in %s:%u, assertion '%s' failed!\n",  \
-            __FUNCTION__, __FILE__, __LINE__, #expr );      \
-        exit(1);                                            \
-    }                                                       \
-}
-
-#define CM_ASSERT_EXIT_MSG( expr, msg )                     \
-{                                                           \
-    if( !(expr) ){                                          \
-        printf( "%s() in %s:%u, assertion '%s' failed!\n",  \
-            __FUNCTION__, __FILE__, __LINE__, #expr );      \
-        printf( msg "\n" );                                 \
-        exit(1);                                            \
-    }                                                       \
-}
+#if !defined(NDEBUG)
 
 /*---------------------------------------------------------------------------*/
-/* Dummy Definitions for CM_NODEBUG                                          */
+/* Internal Procedures                                                       */
 /*---------------------------------------------------------------------------*/
-#else /* !CM_NODEBUG */
+#define CM_ErrExpr( expr_str ) \
+	printf( "*** %s:%u in %s(), '%s' failed!\n", \
+	__FILE__, __LINE__, __FUNCTION__, expr_str )
 
-#define CM_ASSERT(...)
-#define CM_ASSERT_MSG(...)
-#define CM_ASSERT_WARN(...)
-#define CM_ASSERT_WARN_MSG(...)
-#define CM_ASSERT_EXIT(...)
-#define CM_ASSERT_EXIT_MSG(...)
+#define CM_ErrMessage( msg_str ) \
+	puts( "*** " msg_str )
 
-#endif /* !CM_NODEBUG */
 /*---------------------------------------------------------------------------*/
+/* Standard Assertion                                                        */
+/*---------------------------------------------------------------------------*/
+#define CM_Assert( expr ) \
+  ((void)((expr) ? 0 : (CM_ErrExpr(#expr), abort(), 0)))
+
+#define CM_AssertWarn( expr ) \
+  ((void)((expr) ? 0 : (CM_ErrExpr(#expr), 0)))
+
+#define CM_AssertExit( expr ) \
+  ((void)((expr) ? 0: (CM_ErrExpr(#expr), exit(1), 0)))
+
+/*---------------------------------------------------------------------------*/
+/* Assertion with Message                                                    */
+/*---------------------------------------------------------------------------*/
+#define CM_AssertMsg( expr, msg ) \
+  ((void)((expr) ? 0 : (CM_ErrExpr(#expr), CM_ErrMessage(msg), abort(), 0)))
+
+#define CM_AssertMsgWarn( expr, msg ) \
+  ((void)((expr) ? 0 : (CM_ErrExpr(#expr), CM_ErrMessage(msg), 0)))
+
+#define CM_AssertMsgExit( expr, msg ) \
+  ((void)((expr) ? 0 : (CM_ErrExpr(#expr), CM_ErrMessage(msg), exit(1), 0)))
+
+/*---------------------------------------------------------------------------*/
+/* Dummy Definitions for NDEBUG                                              */
+/*---------------------------------------------------------------------------*/
+#else /* !NDEBUG */
+
+#define CM_Assert( expr )              ((void)0)
+#define CM_AssertWarn( expr )          ((void)0)
+#define CM_AssertExit( expr )          ((void)0)
+
+#define CM_AssertMsg( expr, msg )      ((void)0)
+#define CM_AssertMsgWarn( expr, msg )  ((void)0)
+#define CM_AssertMsgExit( expr, msg )  ((void)0)
+
+#endif /* !NDEBUG */
+
 #endif /* END OF FILE */
-/*---------------------------------------------------------------------------*/
-/* -*- indent-tabs-mode: t; tab-width: 4; mode: c; -*- */
-/* vim: set noet ts=4 sw=4 ft=c ff=unix fenc=utf-8 : */

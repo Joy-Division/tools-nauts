@@ -9,16 +9,16 @@
 #define DPK_FORMAT_ID   'DIRF' // Magic Number
 #define DPK_BLOCK_SIZE  0x800  // CDROM Sector
 
-/* -------------------------- */
-/* Little Endian : 0b11100000 */
-/* Big Endian    : 0b10100000 */
-/* -------------------------- */
-#ifdef CM_TARGET_BE
-#define DPK_ATTR_LE  0x000000E0 // swapped for BE target
-#define DPK_ATTR_BE  0xA0000000
-#else
-#define DPK_ATTR_LE  0xE0000000
-#define DPK_ATTR_BE  0x000000A0 // swapped for LE target
+/* ------------------------------ */
+/* Little Endian MSB : 0b11100000 */
+/*    Big Endian MSB : 0b10100000 */
+/* ------------------------------ */
+#if (CM_BYTE_ORDER == CM_BIG_ENDIAN)
+#  define DPK_ATTR_LE  0x000000E0 // swapped
+#  define DPK_ATTR_BE  0xA0000000
+#elif (CM_BYTE_ORDER == CM_LIL_ENDIAN)
+#  define DPK_ATTR_LE  0xE0000000
+#  define DPK_ATTR_BE  0x000000A0 // swapped
 #endif
 
 #pragma pack(push, 1)
