@@ -1,5 +1,5 @@
-#ifndef INC_FMT_SOUND_H
-#define INC_FMT_SOUND_H
+#ifndef INCLUDED_FMT_SOUND_H
+#define INCLUDED_FMT_SOUND_H
 
 // PLACEHOLDER
 

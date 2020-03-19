@@ -5,8 +5,8 @@
  * Copyright (C) 2017 2020 J.Ingram
  * Special thanks to Missingno_force
  */
-#ifndef INC_DPK_EXTRACT_H
-#define INC_DPK_EXTRACT_H
+#ifndef INCLUDED_DPK_EXTRACT_H
+#define INCLUDED_DPK_EXTRACT_H
 
 #include <stdio.h>
 #include "cmtypes.h"
@@ -56,8 +56,4 @@ char    *dir    /* ouput file dir  */
 }
 #endif
 
-/*---------------------------------------------------------------------------*/
 #endif /* END OF FILE */
-/*---------------------------------------------------------------------------*/
-/* -*- indent-tabs-mode: t; tab-width: 4; mode: c; -*- */
-/* vim: set noet ts=4 sw=4 ft=c ff=dos fenc=utf-8 : */

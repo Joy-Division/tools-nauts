@@ -1,5 +1,5 @@
-#ifndef INC_SHARED_H
-#define INC_SHARED_H
+#ifndef INCLUDED_SHARED_H
+#define INCLUDED_SHARED_H
 
 #ifdef __cplusplus
 extern "C" {
