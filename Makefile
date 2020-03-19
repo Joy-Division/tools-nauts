@@ -8,9 +8,9 @@ TOP    = .
 BINDIR = $(TOP)/bin
 INCDIR = $(TOP)/include
 LIBDIR = $(TOP)/lib
-MKDIR  = $(TOP)/make
+MAKDIR = $(TOP)/make
 
-#include $(MKDIR)/mkdefs.mk
+#include $(MAKDIR)/mkdefs.mk
 
 ###############################################################################
 
