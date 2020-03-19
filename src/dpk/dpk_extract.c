@@ -113,12 +113,12 @@ int DPK_CreateOutputDir( char *dir, char *arg )
 }
 
 int DPK_ExtractFile(
-dpkWork *work,  /* DPK work struct */
-u_int   index,  /* DPK entry index */
-FILE    *dpk,   /* DPK file ptr    */
-FILE    *out,   /* ouput file ptr  */
-char    *name,  /* ouput file name */
-char    *dir    /* ouput file dir  */
+	dpkWork *work,  /* DPK work struct */
+	u_int   index,  /* DPK entry index */
+	FILE    *dpk,   /* DPK file ptr    */
+	FILE    *out,   /* ouput file ptr  */
+	char    *name,  /* ouput file name */
+	char    *dir    /* ouput file dir  */
 ){
 	snprintf( name, MAX_PATH, "%s/%.12s", dir, work->entry_table[index].name );
 	
@@ -155,7 +155,7 @@ int main( int argc, char **argv )
 	dpkWork work = {
 		.header      = NULL,
 		.entry_table = NULL,
-		.endian_flag = -1
+		.endian_flag = 0
 	};
 	
 	printf( "DPK Extract (C) 2017 2020 J.Ingram\n" );
@@ -248,7 +248,7 @@ cleanup_free:
 cleanup_fclose:
 	fclose( fin );
 cleanup_exit:
-	printf( "\n***** Program Exit *****\n" );
+	printf( "\n***** PROGRAM EXIT *****\n" );
 	return 0;
 }
 #endif /* !BUILD_LIBRARY */

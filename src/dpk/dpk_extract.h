@@ -17,12 +17,12 @@ extern "C" {
 #endif
 
 /*---------------------------------------------------------------------------*
- * DPK TOC Context
+ * DPK FILE Context
  *---------------------------------------------------------------------------*/
 typedef struct {
 	DPK_HEADER *header;         // pointer to DPK_HEADER buffer
 	DPK_ENTRY  *entry_table;    // pointer to DPK_ENTRY array buffer
-	char        endian_flag;    // DPK file endianness
+	u_int32     endian_flag;    // DPK file endianness
 } dpkWork;
 
 /*---------------------------------------------------------------------------*
@@ -44,12 +44,12 @@ void DPK_EntryTableReverse ( dpkWork *work );
 int DPK_CreateOutputDir( char *dir, char *arg );
 
 int DPK_ExtractFile(
-dpkWork *work,  /* DPK work struct */
-u_int   index,  /* DPK entry index */
-FILE    *dpk,   /* DPK file ptr    */
-FILE    *out,   /* ouput file ptr  */
-char    *name,  /* ouput file name */
-char    *dir    /* ouput file dir  */
+	dpkWork *work,  /* DPK work struct */
+	u_int   index,  /* DPK entry index */
+	FILE    *dpk,   /* DPK file ptr    */
+	FILE    *out,   /* ouput file ptr  */
+	char    *name,  /* ouput file name */
+	char    *dir    /* ouput file dir  */
 );
 
 #ifdef __cplusplus
