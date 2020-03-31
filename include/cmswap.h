@@ -1,5 +1,5 @@
 /*
- *【 LibCM 】ver.20200314
+ *【 LibCM 】ver.20200331
  * Copyright (C) 2019 2020 J.Ingram
  * All rights reserved.
  */
@@ -69,29 +69,29 @@ static inline bool8 CM_TestLilEndian( void );
 static inline u_int16 CM_SwapU16( u_int16 val )
 {
 	union16 in = {.u16 = val}, out;
-	
+
 	out.u8[0] = in.u8[1];
 	out.u8[1] = in.u8[0];
-	
+
 	return out.u16;
 }
 /*---------------------------------------------------------------------------*/
 static inline u_int32 CM_SwapU32( u_int32 val )
 {
 	union32 in = {.u32 = val}, out;
-	
+
 	out.u8[0] = in.u8[3];
 	out.u8[1] = in.u8[2];
 	out.u8[2] = in.u8[1];
 	out.u8[3] = in.u8[0];
-	
+
 	return out.u32;
 }
 /*---------------------------------------------------------------------------*/
 static inline u_int64 CM_SwapU64( u_int64 val )
 {
 	union64 in = {.u64 = val}, out;
-	
+
 	out.u8[0] = in.u8[7];
 	out.u8[1] = in.u8[6];
 	out.u8[2] = in.u8[5];
@@ -100,7 +100,7 @@ static inline u_int64 CM_SwapU64( u_int64 val )
 	out.u8[5] = in.u8[2];
 	out.u8[6] = in.u8[1];
 	out.u8[7] = in.u8[0];
-	
+
 	return out.u64;
 }
 /*---------------------------------------------------------------------------*/
@@ -108,7 +108,7 @@ static inline u_int64 CM_SwapU64( u_int64 val )
 static inline u_int128 CM_SwapU128( u_int128 val )
 {
 	union128 in = {.u128 = val}, out;
-	
+
 	out.u8[ 0] = in.u8[15];
 	out.u8[ 1] = in.u8[14];
 	out.u8[ 2] = in.u8[13];
@@ -125,7 +125,7 @@ static inline u_int128 CM_SwapU128( u_int128 val )
 	out.u8[13] = in.u8[ 2];
 	out.u8[14] = in.u8[ 1];
 	out.u8[15] = in.u8[ 0];
-	
+
 	return out.u128;
 }
 #endif /* CM_HAVE_INT128 */
@@ -136,19 +136,19 @@ static inline u_int128 CM_SwapU128( u_int128 val )
 static inline float32 CM_SwapF32( float32 val )
 {
 	union32 in = {.f32 = val}, out;
-	
+
 	out.u8[0] = in.u8[3];
 	out.u8[1] = in.u8[2];
 	out.u8[2] = in.u8[1];
 	out.u8[3] = in.u8[0];
-	
+
 	return out.f32;
 }
 /*---------------------------------------------------------------------------*/
 static inline float64 CM_SwapF64( float64 val )
 {
 	union64 in = {.f64 = val}, out;
-	
+
 	out.u8[0] = in.u8[7];
 	out.u8[1] = in.u8[6];
 	out.u8[2] = in.u8[5];
@@ -157,7 +157,7 @@ static inline float64 CM_SwapF64( float64 val )
 	out.u8[5] = in.u8[2];
 	out.u8[6] = in.u8[1];
 	out.u8[7] = in.u8[0];
-	
+
 	return out.f64;
 }
 /*---------------------------------------------------------------------------*/
@@ -165,7 +165,7 @@ static inline float64 CM_SwapF64( float64 val )
 static inline float128 CM_SwapF128( float128 val )
 {
 	union128 in = {.f128 = val}, out;
-	
+
 	out.u8[ 0] = in.u8[15];
 	out.u8[ 1] = in.u8[14];
 	out.u8[ 2] = in.u8[13];
@@ -182,7 +182,7 @@ static inline float128 CM_SwapF128( float128 val )
 	out.u8[13] = in.u8[ 2];
 	out.u8[14] = in.u8[ 1];
 	out.u8[15] = in.u8[ 0];
-	
+
 	return out.f128;
 }
 #endif /* CM_HAVE_FLOAT128 */
@@ -194,7 +194,7 @@ static inline void CM_SwapR16( void *ref )
 {
 	union16 *in = (union16 *)ref;
 	union16 tmp = {.u16 = in->u16};
-	
+
 	in->u8[0] = tmp.u8[1];
 	in->u8[1] = tmp.u8[0];
 }
@@ -203,7 +203,7 @@ static inline void CM_SwapR32( void *ref )
 {
 	union32 *in = (union32 *)ref;
 	union32 tmp = {.u32 = in->u32};
-	
+
 	in->u8[0] = tmp.u8[3];
 	in->u8[1] = tmp.u8[2];
 	in->u8[2] = tmp.u8[1];
@@ -214,7 +214,7 @@ static inline void CM_SwapR64( void *ref )
 {
 	union64 *in = (union64 *)ref;
 	union64 tmp = {.u64 = in->u64};
-	
+
 	in->u8[0] = tmp.u8[7];
 	in->u8[1] = tmp.u8[6];
 	in->u8[2] = tmp.u8[5];
@@ -230,7 +230,7 @@ static inline void CM_SwapR128( void *ref )
 {
 	union128 *in = (union128 *)ref;
 	union128 tmp = {.u128 = in->u128};
-	
+
 	in->u8[ 0] = tmp.u8[15];
 	in->u8[ 1] = tmp.u8[14];
 	in->u8[ 2] = tmp.u8[13];
