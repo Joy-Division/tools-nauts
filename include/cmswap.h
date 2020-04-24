@@ -1,5 +1,5 @@
 /*
- *【 LibCM 】ver.20200423
+ *【 LibCM 】ver.20200424
  * Copyright (C) 2019 2020 J.Ingram
  * All Rights Reserved.
  */
@@ -85,8 +85,7 @@ static inline float32 CM_SwapF32( float32 val )
 {
 	cmUnion32 in = {.f32 = val}, out;
 
-	out.u16[0] = CM_SwapU16( in.u16[1] );
-	out.u16[1] = CM_SwapU16( in.u16[0] );
+	out.u32 = CM_SwapU32( in.u32 );
 
 	return out.f32;
 }
@@ -100,8 +99,7 @@ static inline float64 CM_SwapF64( float64 val )
 {
 	cmUnion64 in = {.f64 = val}, out;
 
-	out.u32[0] = CM_SwapU32( in.u32[1] );
-	out.u32[1] = CM_SwapU32( in.u32[0] );
+	out.u64 = CM_SwapU64( in.u64 );
 
 	return out.f64;
 }
