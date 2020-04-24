@@ -42,12 +42,12 @@ void DPK_HeaderReverse( dpkWork *work )
 
 int DPK_HeaderCheck( dpkWork *work )
 {
-	union32 id_be = {.u8 = {'D','I','R','F'}};
-	union32 id_le = {.u8 = {'F','R','I','D'}};
-	
+	cmUnion32 bigId = {.u8 = {'D','I','R','F'}};
+	cmUnion32 lilId = {.u8 = {'F','R','I','D'}};
+
 	// check format ID
-	if(( work->header->format_id != id_le.u32 )
-	&& ( work->header->format_id != id_be.u32 ))
+	if(( work->header->format_id != lilId.u32 )
+	&& ( work->header->format_id != bigId.u32 ))
 	{
 		printf( "\nERROR: Invalid Format ID\n" );
 		printf( "Expected : 'DIRF' or 'FRID'\n" );
@@ -57,11 +57,11 @@ int DPK_HeaderCheck( dpkWork *work )
 	
 	// check attribute
 	if(( work->header->attribute == DPK_ATTR_LE )
-	&& ( work->header->format_id == id_le.u32 )){
+	&& ( work->header->format_id == lilId.u32 )){
 		work->endian_flag = CM_LIL_ENDIAN;
 	}
 	else if(( work->header->attribute == DPK_ATTR_BE )
-	/**/ && ( work->header->format_id == id_be.u32 )){
+	/**/ && ( work->header->format_id == bigId.u32 )){
 		work->endian_flag = CM_BIG_ENDIAN;
 	} else {
 		printf( "\nERROR: Invalid Attribute\n" );

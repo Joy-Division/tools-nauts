@@ -1,7 +1,7 @@
 /*
- *【 LibCM 】ver.20200331
+ *【 LibCM 】ver.20200423
  * Copyright (C) 2019 2020 J.Ingram
- * All rights reserved.
+ * All Rights Reserved.
  */
 /* cmdefs.h
  * Common Definitions
@@ -13,7 +13,7 @@
 /* Generic Constant Definitions                                              */
 /*---------------------------------------------------------------------------*/
 
-/*---< Logical Constants (Boolean) >---*/
+/* --- Logical Constants (Boolean) --- */
 
 #define CM_TRUE   (1)
 #define CM_FALSE  (0)
@@ -28,7 +28,7 @@
 #define FALSE (0)  /* Any changes must be synchronized.  */
 #endif
 
-/*---< Logical Constants (Confirmation) >---*/
+/* --- Logical Constants (Confirmation) --- */
 
 #define CM_YES  (1)
 #define CM_NO   (0)
@@ -40,7 +40,7 @@
 #define NO  CM_NO
 #endif
 
-/*---< Status Constants >---*/
+/* --- Status Constants --- */
 
 #define CM_ON   (1)
 #define CM_OFF  (0)
@@ -52,7 +52,7 @@
 #define OFF CM_OFF
 #endif
 
-/*---< Result Constants >---*/
+/* --- Result Constants --- */
 
 #define CM_OK  ( 0)
 #define CM_NG  (-1)

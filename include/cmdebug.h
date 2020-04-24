@@ -1,7 +1,7 @@
 /*
- *【 LibCM 】ver.20200331
+ *【 LibCM 】ver.20200423
  * Copyright (C) 2019 2020 J.Ingram
- * All rights reserved.
+ * All Rights Reserved.
  */
 /* cmdebug.h
  * Debugging Utilities

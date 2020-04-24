@@ -1,7 +1,7 @@
 /*
- *【 LibCM 】ver.20200331
+ *【 LibCM 】ver.20200423
  * Copyright (C) 2019 2020 J.Ingram
- * All rights reserved.
+ * All Rights Reserved.
  */
 /* cmtypes.h
  * Common Type Definitions
@@ -70,9 +70,9 @@ typedef unsigned long long  ullong, u_llong;
 /*---------------------------------------------------------------------------*/
 /* Integer Types w/ Specified Width                                          */
 /*---------------------------------------------------------------------------*/
-typedef   signed CM_TYPE_INT8   sbyte,  s_byte;
-typedef unsigned CM_TYPE_INT8   ubyte,  u_byte;
-/*---------------------------------------------------------------------------*/
+typedef   signed CM_TYPE_INT8   sbyte, s_byte;
+typedef unsigned CM_TYPE_INT8   ubyte, u_byte;
+
 typedef   signed CM_TYPE_INT8   sint8,  s_int8,  s8;
 typedef unsigned CM_TYPE_INT8   uint8,  u_int8,  u8;
 typedef   signed CM_TYPE_INT16  sint16, s_int16, s16;
@@ -81,7 +81,7 @@ typedef   signed CM_TYPE_INT32  sint32, s_int32, s32;
 typedef unsigned CM_TYPE_INT32  uint32, u_int32, u32;
 typedef   signed CM_TYPE_INT64  sint64, s_int64, s64;
 typedef unsigned CM_TYPE_INT64  uint64, u_int64, u64;
-/*---------------------------------------------------------------------------*/
+
 typedef   signed CM_TYPE_INT8   schar8,   s_char8;
 typedef unsigned CM_TYPE_INT8   uchar8,   u_char8;
 typedef   signed CM_TYPE_INT16  schar16,  s_char16;
@@ -100,18 +100,24 @@ typedef unsigned CM_TYPE_INT64  ulong64,  u_long64;
 /*---------------------------------------------------------------------------*/
 typedef CM_TYPE_FLOAT32  float32, f32;
 typedef CM_TYPE_FLOAT64  float64, f64;
-/*---------------------------------------------------------------------------*/
+
 #if defined(CM_HAVE_MODETF)
+typedef float floatTF  __attribute__((mode(TF)));
+#if (CM_SIZEOF_MODETF == 16)
 typedef float float128 __attribute__((mode(TF)));
 typedef float f128     __attribute__((mode(TF)));
-#define CM_HAVE_FLOAT128 (1)
+#define CM_HAVE_FLOAT128 1
 #endif
-/*---------------------------------------------------------------------------*/
+#endif /* CM_HAVE_MODETF */
+
 #if defined(CM_HAVE_MODEXF)
+typedef float floatXF  __attribute__((mode(XF)));
+#if (CM_SIZEOF_MODEXF == 12)
 typedef float float96  __attribute__((mode(XF)));
 typedef float f96      __attribute__((mode(XF)));
-#define CM_HAVE_FLOAT96 (1)
+#define CM_HAVE_FLOAT96 1
 #endif
+#endif /* CM_HAVE_MODEXF */
 
 /*---------------------------------------------------------------------------*/
 /* 128bit Integer Types (Tetra-Integer Mode)                                 */
@@ -129,8 +135,8 @@ typedef   signed int s_long128 __attribute__((mode(TI)));
 typedef unsigned int u_long128 __attribute__((mode(TI)));
 typedef   signed int s128      __attribute__((mode(TI)));
 typedef unsigned int u128      __attribute__((mode(TI)));
-#define CM_HAVE_INT128 (1)
-#endif
+#define CM_HAVE_INT128 1
+#endif /* CM_HAVE_MODETI */
 
 /*---------------------------------------------------------------------------*/
 /* Fake Boolean Types                                                        */
@@ -165,91 +171,91 @@ typedef unsigned int u128      __attribute__((mode(TI)));
 /*
  * 8-bit (1 Byte)
  */
-typedef union union8 {
+typedef union cmUnion8 {
 	struct {
-		byte bit0:1; /* LSB */
-		byte bit1:1;
-		byte bit2:1;
-		byte bit3:1;
-		byte bit4:1;
-		byte bit5:1;
-		byte bit6:1;
-		byte bit7:1; /* MSB */
-	};
+		u_byte bit0:1;  /*   1 (0x01) */
+		u_byte bit1:1;  /*   2 (0x02) */
+		u_byte bit2:1;  /*   4 (0x04) */
+		u_byte bit3:1;  /*   8 (0x08) */
+		u_byte bit4:1;  /*  16 (0x10) */
+		u_byte bit5:1;  /*  32 (0x20) */
+		u_byte bit6:1;  /*  64 (0x40) */
+		u_byte bit7:1;  /* 128 (0x80) */
+	} oct;
 	s_int8 s8;
 	u_int8 u8;
-} union8;
+} cmUnion8;
 
 /*
  * 16-bit (2 Bytes)
  */
-typedef union union16 {
-	s_int16 s16;
-	u_int16 u16;
-	s_int8  s8[2];
-	u_int8  u8[2];
-	union8  c8[2];
-} union16;
+typedef union cmUnion16 {
+	s_int16     s16;
+	u_int16     u16;
+	s_int8      s8[2];
+	u_int8      u8[2];
+	cmUnion8    r8[2];
+} cmUnion16;
 
 /*
  * 32-bit (4 Bytes)
  */
-typedef union union32 {
-	s_int32 s32;
-	u_int32 u32;
-	float32 f32;
-	s_int16 s16[2];
-	u_int16 u16[2];
-	union16 c16[2];
-	s_int8  s8[4];
-	u_int8  u8[4];
-	union8  c8[4];
-} union32;
+typedef union cmUnion32 {
+	s_int32     s32;
+	u_int32     u32;
+	float32     f32;
+	s_int16     s16[2];
+	u_int16     u16[2];
+	cmUnion16   r16[2];
+	s_int8      s8[4];
+	u_int8      u8[4];
+	cmUnion8    r8[4];
+} cmUnion32;
 
 /*
  * 64-bit (8 Bytes)
  */
-typedef union union64 {
-	s_int64 s64;
-	u_int64 u64;
-	float64 f64;
-	s_int32 s32[2];
-	u_int32 u32[2];
-	float32 f32[2];
-	union32 c32[2];
-	s_int16 s16[4];
-	u_int16 u16[4];
-	union16 c16[4];
-	s_int8  s8[8];
-	u_int8  u8[8];
-	union8  c8[8];
-} union64;
+typedef union cmUnion64 {
+	s_int64     s64;
+	u_int64     u64;
+	float64     f64;
+	s_int32     s32[2];
+	u_int32     u32[2];
+	float32     f32[2];
+	cmUnion32   r32[2];
+	s_int16     s16[4];
+	u_int16     u16[4];
+	cmUnion16   r16[4];
+	s_int8      s8[8];
+	u_int8      u8[8];
+	cmUnion8    r8[8];
+} cmUnion64;
 
 /*
  * 128-bit (16 Bytes)
  */
-typedef union union128 {
+typedef union cmUnion128 {
 #ifdef CM_HAVE_INT128
-	s_int128 s128;
-	u_int128 u128;
+	s_int128    s128;
+	u_int128    u128;
 #endif
 #ifdef CM_HAVE_FLOAT128
-	float128 f128;
+	float128    f128;
 #endif
-	s_int64  s64[2];
-	u_int64  u64[2];
-	float64  f64[2];
-	union64  c64[2];
-	s_int32  s32[4];
-	u_int32  u32[4];
-	float32  f32[4];
-	union32  c32[4];
-	s_int16  s16[8];
-	u_int16  u16[8];
-	union16  c16[8];
-	s_int8   s8[16];
-	u_int8   u8[16];
-	union8   c8[16];
-} union128;
+	s_int64     s64[2];
+	u_int64     u64[2];
+	float64     f64[2];
+	cmUnion64   r64[2];
+	s_int32     s32[4];
+	u_int32     u32[4];
+	float32     f32[4];
+	cmUnion32   r32[4];
+	s_int16     s16[8];
+	u_int16     u16[8];
+	cmUnion16   r16[8];
+	s_int8      s8[16];
+	u_int8      u8[16];
+	cmUnion8    r8[16];
+} cmUnion128;
 
 #endif /* END OF FILE */
