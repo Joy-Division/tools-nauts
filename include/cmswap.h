@@ -1,10 +1,7 @@
 /*
- *【 LibCM 】ver.20200424
+ *【 LibCM 】ver.20200504
  * Copyright (C) 2019 2020 J.Ingram
  * All Rights Reserved.
- */
-/* cmswap.h
- * Endianness Utilities
  */
 #ifndef INCLUDED_CMSWAP_H
 #define INCLUDED_CMSWAP_H
@@ -12,9 +9,9 @@
 #include "cmconf.h"
 #include "cmtypes.h"
 
-/*---------------------------------------------------------------------------*/
+/*===========================================================================*/
 /* ByteSwap for Integer Types                                                */
-/*---------------------------------------------------------------------------*/
+/*===========================================================================*/
 
 #define CM_SwapS16( val ) \
 	(s16)CM_SwapU16( (u16)val )
@@ -74,9 +71,9 @@ static inline u_int128 CM_SwapU128( u_int128 val )
 }
 #endif /* CM_HAVE_INT128 */
 
-/*---------------------------------------------------------------------------*/
+/*===========================================================================*/
 /* ByteSwap for Floating Point Types w/ Fixed-Width                          */
-/*---------------------------------------------------------------------------*/
+/*===========================================================================*/
 
 #define CM_SwapFloat( val ) \
 	CM_SwapF32( (f32)val )
@@ -118,9 +115,9 @@ static inline float128 CM_SwapF128( float128 val )
 }
 #endif /* CM_HAVE_FLOAT128 */
 
-/*---------------------------------------------------------------------------*/
+/*===========================================================================*/
 /* ByteSwap for Floating Point Types w/ Target-Dependent Width               */
-/*---------------------------------------------------------------------------*/
+/*===========================================================================*/
 
 static inline long double CM_SwapLongDouble( long double val )
 {
@@ -128,18 +125,18 @@ static inline long double CM_SwapLongDouble( long double val )
 	u_byte *in = (u_byte *)&val;
 	u_byte *out = (u_byte *)&tmp;
 
-	const int SIZE = sizeof(long double);
+	int i = 0, j = sizeof(long double)-1;
 
-	for( int i=0, j=(SIZE-1); i < SIZE; i++, j-- )
+	while( i < sizeof(long double) )
 	{
-		out[i] = in[j];
+		out[i++] = in[j--];
 	}
 	return tmp;
 }
 
-/*---------------------------------------------------------------------------*/
+/*===========================================================================*/
 /* ByteSwap (Pass by Reference)                                              */
-/*---------------------------------------------------------------------------*/
+/*===========================================================================*/
 
 static inline void CM_SwapR16( void *ref )
 {
@@ -169,9 +166,9 @@ static inline void CM_SwapR128( void *ref )
 }
 #endif /* CM_HAVE_INT128 */
 
-/*---------------------------------------------------------------------------*/
+/*===========================================================================*/
 /* Get Target Endianness                                                     */
-/*---------------------------------------------------------------------------*/
+/*===========================================================================*/
 
 static inline int CM_GetEndianness( void )
 {
@@ -187,6 +184,8 @@ static inline bool8 CM_IsLilEndian( void )
 {
 	return (CM_BYTE_ORDER == CM_LIL_ENDIAN);
 }
+
+/*---------------------------------------------------------------------------*/
 
 static inline bool8 CM_TestBigEndian( void )
 {
